@@ -23,7 +23,8 @@
     "gulp-uglify": "^1.2.0",
     "jade": "^1.9.2",
     "jadeify": "^4.2.0",
-    "mkdirp": "^0.5.0"
+    "mkdirp": "^0.5.0",
+    "rimraf": "^2.3.2"
   },
   "browserify": {
     "transform": [

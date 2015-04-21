@@ -1,5 +1,6 @@
 var gulp = require('gulp');
+var rm = require('rimraf');
 
-gulp.task('clean', function () {
-  // todo
+gulp.task('clean', function (cb) {
+  rm('./dist', cb);
 });
