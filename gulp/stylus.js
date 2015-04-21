@@ -9,6 +9,7 @@ module.exports = function (env) {
   var production = env !== 'development';
   gulp.task('stylus', function () {
     mkdirp('dist');
+    mkdirp('dist/client');
     var t = gulp.src('./lib/**/*.styl')
       .pipe(sourcemaps.init())
       .pipe(stylus())
@@ -16,6 +17,6 @@ module.exports = function (env) {
       .pipe(concat('dist.css'));
 
     if (production) t.pipe(minify());
-    t.pipe(gulp.dest('./dist/'));
+    t.pipe(gulp.dest('./dist/client/'));
   });
 };
