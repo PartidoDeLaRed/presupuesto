@@ -22,3 +22,10 @@ Single page isometric application project starter. Work in progress.
 2. `npm install`
 3. `npm start`
 4. Browse to http://localhost:8000
+
+## To do list
+- [ ] Add more pages to the sample app
+- [ ] Server side rendering
+- [ ] Make ES6 work
+- [ ] Ugly `require` calls
+- [ ] Consider some reactive library
