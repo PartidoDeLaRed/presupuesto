@@ -27,7 +27,7 @@ module.exports = function(opts) {
     var b = browserify({ debug: !production });
     if (opts.es6) b.transform(babelify);
 
-    b.require('./lib/main.js', { entry: true })
+    b.require('./lib/boot/boot.js', { entry: true })
       .bundle()
       .on('error', console.log)
       .pipe(fs.createWriteStream('./dist/client/dist.js'));
