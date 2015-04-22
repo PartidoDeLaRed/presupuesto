@@ -4,8 +4,10 @@
   "description": "Just a sample app with a build process based on browserify and gulp",
   "main": "index.js",
   "dependencies": {
+    "dom": "0.0.3",
+    "event-emitter": "^0.3.3",
     "express": "4.12.3",
-    "dom": "0.0.3"
+    "page": "^1.6.3"
   },
   "devDependencies": {
     "babelify": "^6.0.2",
@@ -37,5 +39,6 @@
     "start": "gulp serve"
   },
   "author": "José Fresco",
+  "repository": "git@github.com:jfresco/spa-boilerplate.git",
   "license": "MIT"
 }
