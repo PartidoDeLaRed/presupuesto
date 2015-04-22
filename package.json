@@ -36,7 +36,7 @@
   "scripts": {
     "postinstall": "gulp build",
     "test": "gulp test",
-    "start": "gulp serve"
+    "start": "node lib/boot/index.js"
   },
   "author": "José Fresco",
   "repository": "git@github.com:jfresco/spa-boilerplate.git",
