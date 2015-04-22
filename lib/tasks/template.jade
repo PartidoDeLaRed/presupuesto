@@ -1,0 +1,12 @@
+.main.wrapper.clearfix#tasks
+  article
+    header
+      h1 Your tasks
+      input.new-task(placeholder='What needs to be done?')
+      button.add-link
+        | Add
+      ul
+        for task in tasks
+          li
+            =task
+
