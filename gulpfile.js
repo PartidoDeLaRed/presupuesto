@@ -2,7 +2,7 @@
 
 var env = process.env.NODE_ENV;
 
-require('./gulp/javascript')({ env: env, es6: false });
+require('./gulp/javascript')({ env: env, es6: true });
 require('./gulp/stylus')(env);
 require('./gulp/watch');
 require('./gulp/test');

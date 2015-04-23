@@ -4,6 +4,8 @@ Single page isometric application project starter. Work in progress.
 [![Build Status](https://travis-ci.org/jfresco/spa-boilerplate.svg?branch=master)](https://travis-ci.org/jfresco/spa-boilerplate)
 
 ## Features
+* Express
+* page.js
 * Uses `npm` as frontend and backend package manager (no `bower`, no `component`)
 * `gulp` orchestrates the build process by doing the following:
   * Browserifies client side code
@@ -26,9 +28,10 @@ Single page isometric application project starter. Work in progress.
 4. Browse to http://localhost:8000
 
 ## To do list
+- [ ] Spritesheets
 - [ ] Add more pages to the sample app
 - [ ] Server side rendering
-- [ ] Make ES6 work
+- [x] Make ES6 work
 - [ ] Ugly `require` calls
 - [ ] Consider some reactive library
 - [ ] Add more tests

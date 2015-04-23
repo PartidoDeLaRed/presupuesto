@@ -3,7 +3,6 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var browserify = require('browserify');
 var babelify = require('babelify');
-var babel = require('gulp-babel');
 
 module.exports = function(opts) {
   opts = opts || {};
@@ -16,7 +15,6 @@ module.exports = function(opts) {
 
   gulp.task('javascript:server', function () {
     var t = gulp.src('./lib/boot/index.js');
-    if (opts.es6) t.pipe(babel());
     t.pipe(gulp.dest('dist/server'));
   });
 
