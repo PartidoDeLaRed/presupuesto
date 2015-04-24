@@ -9,27 +9,29 @@ var mkdirp = require('mkdirp');
 module.exports = function (env) {
   var production = env !== undefined && env !== 'development';
 
-  gulp.task('sprite', function () {
+  gulp.task('sprite', ['public'], function () {
     var spriteData = gulp.src('lib/**/*.png')
       .pipe(spritesmith({
         imgName: 'sprite.png',
         cssName: 'sprite.css'
       }));
 
-    if (production) spriteData.css.pipe(minify());
+    if (production) {
+      console.log('Minifying spritesheets for production...')
+      spriteData.css.pipe(minify());
+    }
+
     spriteData.pipe(gulp.dest('./public/'))
   });
 
   gulp.task('css', [ 'sprite' ], function () {
-    mkdirp('public');
-
     var t = gulp.src('./lib/**/*.styl')
-      .pipe(sourcemaps.init())
-      .pipe(stylus())
-      .pipe(sourcemaps.write())
-      .pipe(concat('app.css'));
+    if (!production) t = t.pipe(sourcemaps.init());
+    t = t.pipe(stylus())
+    if (!production) t = t.pipe(sourcemaps.write());
+    t = t.pipe(concat('app.css'));
 
-    if (production) t.pipe(minify());
+    if (production) t = t.pipe(minify());
     t.pipe(gulp.dest('./public/'));
   });
 };

@@ -1,25 +1,27 @@
 var gulp = require('gulp');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
 var browserify = require('browserify');
 var babelify = require('babelify');
+var uglify = require('gulp-uglify');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var sourcemaps = require('gulp-sourcemaps');
 
-module.exports = function(opts) {
-  opts = opts || {};
-  opts.env = opts.env || 'development';
-  opts.es6 = opts.es6 === 'undefined' ? false : opts.es6;
+module.exports = function (env) {
+  env = env || 'development';
+  var production = env !== 'development';
 
-  var production = opts.env !== 'development';
-
-  gulp.task('javascript', function () {
-    mkdirp('public');
-
-    var b = browserify({ debug: !production });
-    if (opts.es6) b.transform(babelify);
-
-    b.require('./lib/boot/boot.js', { entry: true })
+  gulp.task('javascript', ['public'], function () {
+    var b = browserify({ entries: './lib/boot/boot.js', debug: !production });
+    b = b
+      .transform(babelify)
       .bundle()
-      .on('error', console.log)
-      .pipe(fs.createWriteStream('./public/app.js'));
+      .pipe(source('app.js'))
+      .pipe(buffer());
+
+    if (!production) b = b.pipe(sourcemaps.init({ loadMaps: true }))
+    if (production) b = b.pipe(uglify());
+    if (!production) b = b.pipe(sourcemaps.write('./'))
+
+    b.pipe(gulp.dest('./public/'))
   });
 };
