@@ -11,16 +11,8 @@ module.exports = function(opts) {
 
   var production = opts.env !== 'development';
 
-  gulp.task('javascript', ['javascript:client', 'javascript:server']);
-
-  gulp.task('javascript:server', function () {
-    var t = gulp.src('./lib/boot/index.js');
-    t.pipe(gulp.dest('dist/server'));
-  });
-
-  gulp.task('javascript:client', function () {
-    mkdirp('dist');
-    mkdirp('dist/client');
+  gulp.task('javascript', function () {
+    mkdirp('public');
 
     var b = browserify({ debug: !production });
     if (opts.es6) b.transform(babelify);
@@ -28,6 +20,6 @@ module.exports = function(opts) {
     b.require('./lib/boot/boot.js', { entry: true })
       .bundle()
       .on('error', console.log)
-      .pipe(fs.createWriteStream('./dist/client/dist.js'));
+      .pipe(fs.createWriteStream('./public/app.js'));
   });
 };
