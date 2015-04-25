@@ -4,7 +4,6 @@ var concat = require('gulp-concat-css');
 var minify = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
 var spritesmith = require('gulp.spritesmith')
-var mkdirp = require('mkdirp');
 
 module.exports = function (env) {
   var production = env !== undefined && env !== 'development';
