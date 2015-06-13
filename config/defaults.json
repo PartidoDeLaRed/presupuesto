@@ -1,3 +1,5 @@
 {
-  "organizationName": "Presupuesto"
+  "organizationName": "Presupuesto",
+  "debug": "*",
+  "dbURI": "mongodb://localhost/presupuesto-dev"
 }
