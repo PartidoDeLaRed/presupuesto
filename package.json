@@ -29,7 +29,8 @@
     "vinyl-source-stream": "^1.1.0",
     "vinyl-transform": "^1.0.0",
     "merge-util": "0.3.1",
-    "babel": "5.1.13"
+    "babel": "5.1.13",
+    "mongoose": "4.0.3"
   },
   "browserify": {
     "transform": [
