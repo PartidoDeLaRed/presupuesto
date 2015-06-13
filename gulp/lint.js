@@ -1,8 +1,8 @@
-var gulp = require('gulp');
-var jshint = require('gulp-jshint');
+var gulp = require('gulp')
+var jshint = require('gulp-jshint')
 
 gulp.task('lint', ['javascript'], function () {
-  gulp.src('./lib/**/*.js')
+  return gulp.src('./lib/**/*.js')
     .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(jshint.reporter('default'))
 });
