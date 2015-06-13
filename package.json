@@ -1,7 +1,7 @@
 {
-  "name": "spa-boilerplate",
+  "name": "presupuesto-pdr",
   "version": "0.0.1",
-  "description": "Just a sample app with a build process based on browserify and gulp",
+  "description": "",
   "main": "index.js",
   "dependencies": {
     "dom": "0.0.3",
@@ -39,7 +39,7 @@
     "test": "gulp test",
     "start": "babel-node lib/boot/index.js"
   },
-  "author": "José Fresco",
-  "repository": "git@github.com:jfresco/spa-boilerplate.git",
+  "author": "Partido de la Red",
+  "repository": "git@github.com:jfresco/presupuesto-pdr.git",
   "license": "MIT"
 }
