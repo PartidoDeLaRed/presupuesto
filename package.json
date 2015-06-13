@@ -37,6 +37,7 @@
     ]
   },
   "scripts": {
+    "postinstall": "gulp build",
     "test": "gulp test",
     "start": "babel-node lib/boot/index.js"
   },
