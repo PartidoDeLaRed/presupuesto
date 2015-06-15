@@ -30,7 +30,8 @@
     "vinyl-transform": "^1.0.0",
     "merge-util": "0.3.1",
     "babel": "5.1.13",
-    "mongoose": "4.0.3"
+    "mongoose": "4.0.3",
+    "superagent": "1.2.0"
   },
   "browserify": {
     "transform": [

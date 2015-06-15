@@ -1,0 +1,24 @@
+.budget
+  .col-md-2
+  .col-md-8
+    .row
+      h1 Budget
+      form
+        .form-group
+          label Select a year
+          select.form-control
+            option 9999
+            option 2014
+            option 2013
+
+          label Data
+          table.table
+            thead
+              th Category
+              th Amount
+            tbody
+              each item in budget
+                tr
+                  td=item.category.name
+                  td=item.amount
+  .col-md-2
