@@ -8,5 +8,14 @@ env.NODE_PATH = '.'
 env.DEBUG = 'presupuesto*'
 
 gulp.task('serve', function (cb) {
-  return spawn('./node_modules/.bin/babel-node', ['lib/boot/index.js'], { stdio: [0, 1, 2], env: env })
+  var task = {}
+  if ('win32' === process.platform) {
+    task.node = 'node_modules\\.bin\\babel-node'
+    task.main = 'lib\\boot\\index.js'
+  } else {
+    task.node = './node_modules/.bin/babel-node'
+    task.main = 'lib/boot/index.js'
+  }
+
+  return spawn(task.node, [task.main], { stdio: [0, 1, 2], env: env })
 })
