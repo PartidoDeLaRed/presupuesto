@@ -1,5 +1,6 @@
 {
   "organizationName": "Presupuesto",
   "debug": "*",
-  "dbURI": "mongodb://localhost/presupuesto-dev"
+  "dbURI": "mongodb://localhost/presupuesto-dev",
+  "clientConfig": ""
 }
