@@ -5,7 +5,7 @@
 * git
 
 ## Getting started
-1. `git clone git@github.com:jfresco/spa-boilerplate.git`
+1. clone this repo
 2. `npm install`
 3. `npm start`
 4. Browse to http://localhost:8000
@@ -13,7 +13,7 @@
 ## How to setup deploy to Heroku
 You have to set up a new git remote pointing to the Heroku repo:
 ```
-heroku git:remote -a presupuesto-pdr
+heroku git:remote -a my-heroku-app-name
 heroku login
 ```
 and enter your credentials.
