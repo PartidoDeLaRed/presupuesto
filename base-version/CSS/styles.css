@@ -25,13 +25,41 @@ html, body {
 .items-container {
     position: absolute;
     top: 0;
-    bottom: 90px;
+    bottom: 0;
     width: 100%;
 }
 
+.datacontainer {
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 90px;
+}
+
+.nombrecategoria {
+  position: absolute;
+  width: 100%;
+  bottom: 50px;
+  padding: 0px 10px;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.presupuestoCategoria {
+    position: absolute;    width: 100%;    
+    bottom: 25px;    padding: 0px 10px;    font-size: 15px;    
+    font-weight: normal;    text-transform: uppercase;    text-align: center;
+    white-space: nowrap;    text-overflow: ellipsis;    overflow: hidden;
+}
+
 .items-base {
-    width: 110%;
-    height: 150px;
+    width: 100%;
+    height: 90px;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -43,9 +71,13 @@ html, body {
     display: inline-block;      
     position: relative;   
     height: 100%; 
+	
+    border-width: 0 1px;
+	border-style:dashed;
+	
+    border-color: rgba(0,0,0,.1);
+    overflow: hidden;
     text-align: center;
-    margin-left: -5px;
-    margin-right: -5px;
 }
 
 .item-icono {
@@ -71,6 +103,69 @@ html, body {
     font-weight: bold;
 }
 
+.imagenesCategoriaContainer {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    bottom: 90px;
+    text-align: center;
+}
+
+.imagenCategoria {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.headerName {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    margin-left: -250px;
+    width: 500px;
+    height: 56px;
+    z-index: 100;
+    background-color: #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,.2);
+    line-height: 50px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    border: 3px solid #ddd;
+    color: #169CBF;
+    text-transform: uppercase;
+}
+
+.header {
+    position: fixed;    top: 0;    left: 0;    width: 100%;    height: 50px;    z-index: 100;    background-color: #eee;    box-shadow: 0 2px 3px rgba(0,0,0,.2);
+}
+
+.finishButton {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 2.5px;
+    height: 45px;
+    line-height: 44px;
+    padding: 0 50px 0 15px;
+    background-color: #169CBF;
+    color: #eee;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    background-image: url(../IMG/rightArrow.png);
+    background-position: right center;
+    background-size: 45px 45px;
+    background-repeat: no-repeat;
+    border-bottom: 4px solid rgba(0,0,0,.2);
+    border-right: 0px solid rgba(0,0,0,.2);
+    border-radius: 3px;
+}
+
 .dragger {
 	display: inline-block;
 	height: 100%;
@@ -90,22 +185,20 @@ html, body {
 
 .total-dinero {
     position: absolute;
-    left: 50%;
-    bottom: 20px;
+    left: 15px;
+    top: 0;
     line-height: 50px;
-    width: 380px;
-    margin-left: -190px;
-    margin-top: -25px;
-    text-align: center;
+    text-align: left;
     font-weight: 600;
+
     color: #666;
-    font-size: 40px;
+    font-size: 25px;
 }
 
 #street-section-sky {
   position: absolute;
   left: 0;
-  bottom: 150px;
+  bottom: 90px;
   width: 100%;
   pointer-events: none;
   background-size: 100% 550px;
@@ -126,7 +219,7 @@ html, body {
 }
 
 #street-section-sky .front-clouds {
-  bottom: 405px;
+  bottom: 370px;
   z-index: auto;
 }
 .rear-clouds.front-clouds, .front-clouds.front-clouds {
