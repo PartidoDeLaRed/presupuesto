@@ -8,32 +8,32 @@
     "composes": ["Salud"]
   },
   {
+    "name": "Ecología y Medio Ambiente",
+    "composes": ["Servicios Urbanos", "Ecología", "Agua Potable y Alcantarillado"]
+  },
+  {
+    "name": "Administración y Legislación",
+    "composes": ["Deuda pública - Intereses", "Dirección Ejecutiva", "Control de la Gestión", "Administración Física", "Legislativa", "Seguros y Finanzas", "Relaciones Interiores"]
+  },
+  {
+    "name": "Seguridad y Justicia",
+    "composes": ["Judicial", "Seguridad Interior"]
+  },
+  {
     "name": "Promoción y Acción Social",
     "composes": ["Promoción y Acción Social"]
   },
   {
-    "name": "Seguridad y Justicia",
-    "composes": ["Judicial", "Seguridad Interior", "Relaciones Interiores"]
-  },
-  {
-    "name": "Administración y Legislación",
-    "composes": ["Deuda pública - Intereses", "Dirección Ejecutiva", "Control de la Gestión", "Administración Física", "Legislativa", "Seguros y Finanzas"]
-  },
-  {
-    "name": "Transporte y Espacio Público",
-    "composes": ["Servicios Urbanos", "Transporte"]
-  },
-  {
-    "name": "Vivienda",
-    "composes": ["Vivienda"]
+    "name": "Transporte",
+    "composes": ["Transporte"]
   },
   {
     "name": "Cultura y Turismo",
     "composes": ["Cultura", "Turismo"]
   },
   {
-    "name": "Ecología y Medio Ambiente",
-    "composes": ["Ecología", "Agua Potable y Alcantarillado"]
+    "name": "Vivienda",
+    "composes": ["Vivienda"]
   },
   {
     "name": "Trabajo e Industria",
