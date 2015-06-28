@@ -1,9 +1,42 @@
+.container-wrapper {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
 .container {
     max-width: 100%;    margin: 0 auto;    
     /* background-color: #eee; */
     height: 100%;
     position: relative;
     overflow: hidden;
+}
+.inner-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding: 1px;
+}
+
+.inset-container {
+  position: relative;
+  height: 45%;
+  width: 95%;
+  /* overflow: hidden; */
+  margin: 30px auto;
+  border: 10px solid rgb(204, 204, 204);
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  border-radius: 2px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 500ms;
 }
 
 * {
@@ -20,6 +53,61 @@ html, body {
     left: 0;
     top: 0;
     background-color: #a9ccdb;
+}
+
+.title {
+    position: absolute;
+    top: 40%;
+    margin-top: -35px;
+    width: 100%;
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+    font-size: 60px;
+    color: rgba(0,0,0,.6);
+    text-transform: uppercase;
+}
+
+.subTitle {
+    position: absolute;    
+    top: 50%;        
+    left: 50%;
+    width: 650px;        
+    margin-left: -325px;
+    text-align: center;    
+    line-height: 40px;    
+    font-size: 25px;    
+    color: rgba(0,0,0,.4);    
+}
+
+.buttonIniciarJuego {
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+    font-size: 20px;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: .7;
+    transition: all 300ms;
+    background-image: url(../IMG/downArrows.png);    
+    background-size: 50px 50px;    
+    background-position: center 35px;    background-repeat: no-repeat;
+}
+
+.buttonIniciarJuego:hover {
+    opacity: 1;
+    bottom: 0;
+    transition: all 300ms;
+}
+
+.buttonIniciarJuego::before {
+    content: '';
+    background-image: url(../IMG/downArrows.png);
+    background-size: 60px 60px;
+    background-position: center bottom;
+    background-repeat: no-repeat;
 }
 
 .items-container {
@@ -71,13 +159,12 @@ html, body {
     display: inline-block;      
     position: relative;   
     height: 100%; 
-	
     border-width: 0 1px;
-	border-style:dashed;
-	
-    border-color: rgba(0,0,0,.1);
+    border-style:dashed;
+    border-color: rgba(0,0,0,.0);
     overflow: hidden;
     text-align: center;
+	transition:border 300ms;
 }
 
 .item-icono {
@@ -115,7 +202,7 @@ html, body {
     height: 100%;
     width: 100%;
     margin: auto;
-    background-position: bottom left;
+    background-position: bottom center;
     background-repeat: no-repeat;
     background-size: contain;
 }
@@ -139,8 +226,18 @@ html, body {
     text-transform: uppercase;
 }
 
+.inset-container .headerName {
+    top: -30px;
+}
+
+.inset-container .street-section-sky {
+    height: 100%;
+    overflow: hidden;
+}
+
 .header {
-    position: fixed;    top: 0;    left: 0;    width: 100%;    height: 50px;    z-index: 100;    background-color: #eee;    box-shadow: 0 2px 3px rgba(0,0,0,.2);
+    position: fixed;    
+    top: -85px;    left: 0;    width: 100%;    height: 50px;    z-index: 100;    background-color: #eee;    box-shadow: 0 2px 3px rgba(0,0,0,.2);
 }
 
 .finishButton {
@@ -177,6 +274,8 @@ html, body {
 	transition:opacity 200px;
 	z-index:1000;
 	cursor:ew-resize;
+
+
 }
 .dragger:hover {
 	opacity:1;
@@ -191,11 +290,12 @@ html, body {
     text-align: left;
     font-weight: 600;
 
+
     color: #666;
     font-size: 25px;
 }
 
-#street-section-sky {
+.street-section-sky {
   position: absolute;
   left: 0;
   bottom: 90px;
@@ -207,7 +307,12 @@ html, body {
   background-color: #a9ccdb;
 }
 
-#street-section-sky .rear-clouds {
+.inset-container .street-section-sky {
+	top:0;
+	bottom:auto;
+}
+
+.street-section-sky .rear-clouds {
   bottom: 674px;
   z-index: auto;
 }
@@ -218,7 +323,7 @@ html, body {
   bottom: 330px;
 }
 
-#street-section-sky .front-clouds {
+.street-section-sky .front-clouds {
   bottom: 370px;
   z-index: auto;
 }
