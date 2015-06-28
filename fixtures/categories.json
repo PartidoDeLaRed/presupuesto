@@ -21,7 +21,7 @@
   },
   {
     "name": "Transporte y Espacio Público",
-    "composes": ["Servicios Urbanos", "Transporte", ""]
+    "composes": ["Servicios Urbanos", "Transporte"]
   },
   {
     "name": "Vivienda",
