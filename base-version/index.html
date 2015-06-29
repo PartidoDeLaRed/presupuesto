@@ -2,26 +2,28 @@
 <head>
 <link href="CSS/styles.css" rel='stylesheet' type="text/css" >
 <link href='http://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="JS/data.js"></script>
 <script src="JS/javascript.js"></script>
 <script src="https://apis.google.com/js/client.js"></script>
 
 </head>
 
 <body>
-
+<div class="header">
+	<div class="headerName">Armá tu ciudad</div>
+    <div class="total-dinero"></div>
+</div>
 <div class="container">
-	<section id="street-section-sky">
-    	<div class="rear-clouds" style="-webkit-transform: translateX(0px);"></div>
-        <div class="front-clouds" style="-webkit-transform: translateX(0px);"></div>
-    </section>    
-	<div class="items-base">
-    </div>
-    <div class="items-container">
-    </div>
-    <div class="total-dinero">$6.000.000.000.00</div>
+	<div class="container-wrapper">
+        <div id="inicio" class="inner-container"></div>
+        <div id="juego" class="inner-container"></div>
+        <div id="resultados" class="inner-container" style="background-color:#ddd;"></div>
+        <div id="datos" class="inner-container"></div>
+	</div>
 </div>
 
 </body>
