@@ -24,8 +24,7 @@ function CargarInicio()
 
 function CargaJuego(data)
 {
-	CargarData('#juego', data);
-
+	CargarData('#juego', data, false);
 
 	var terminarJuego = CrearElemento('div', 'finishButton');
 	$(terminarJuego).html('Terminar');
@@ -38,19 +37,18 @@ function CargaJuego(data)
 	$('.header').append(terminarJuego);
 
 	//Interaccion
-	$('.item-container:not(:last)').resizable({
+	$('.item-container:first').resizable({
 		handles: "e",
+		autoHide: true,
 		resize: function( event, ui ) {
-			var dif = ui.originalSize.width - $(ui.element).outerWidth(true) + 1;
-			var siguientes = $('.ui-resizable-resizing ~ .item-container').filter(function(index, e){
-				return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
-			var sumaCategoria = dif / siguientes.length;
-
-			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+			var presupuesto = ui.size.width / window.anchoTotal * window.presupuestoTotal;
 			$(ui.element).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 
+			dif = ui.originalSize.width - ui.element.outerWidth(true);
+			siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+			var sumaCategoria = dif / siguientes.length;
 			siguientes.each(function(index, element) {
-				var anchoCategoria = parseFloat($(this).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
+				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 				$(element).css('width', anchoCategoria + 'px');
@@ -59,11 +57,83 @@ function CargaJuego(data)
 		},
 		stop: function(event, ui)
 		{
-			$('.item-container').each(function(index, element) {
-                var cat = data.filter(function(cat){return cat.codigo == parseInt($(this).attr('data-codigo'))});
-				cat.presupuesto = $(this).outerWidth(true) / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.presupuestoCategoria').html(FormateoDinero(cat.presupuesto));
-				$(this).attr('data-presupuesto', cat.presupuesto);
+			$(data).each(function(index, element) {
+				RecalcularPresupuesto(element);
+            });
+		}
+	});
+	$('.item-container:not(:first):not(:last)').resizable({
+		handles: "w,e",
+		autoHide: true,
+		resize: function( event, ui ) {
+			var direction = 'left';
+			var dif = ui.position.left - ui.originalPosition.left;
+			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+			if(dif == 0)
+			{
+				direction = 'right';
+				dif = ui.originalSize.width - ui.size.width;
+				siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+			}
+			var sumaCategoria = dif / siguientes.length;
+
+			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+			$(ui.element).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+
+			siguientes.each(function(index, element) {
+				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
+				$(element).css('width', anchoCategoria + 'px');
+				
+				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
+				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+            });
+			
+			if(direction == 'right')
+				ui.element.css('width', ui.size.width + 'px');
+			else
+			{
+				ui.element.css('margin-left', -dif + 'px');
+				ui.element.css('margin-right', dif + 'px');
+			}
+		},
+		stop: function(event, ui)
+		{
+			ui.element.css('left', ui.position.left + SinPx(ui.element.css('margin-left')));
+			ui.element.css('margin-left', 0 + 'px');
+			ui.element.css('margin-right', 0 + 'px');
+			$(data).each(function(index, element) {
+				RecalcularPresupuesto(element);
+            });
+		}
+	});
+	$('.item-container:last').resizable({
+		handles: "w",
+		autoHide: true,
+		resize: function( event, ui ) {
+			var dif = ui.position.left - ui.originalPosition.left;
+			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+			var sumaCategoria = dif / siguientes.length;
+
+			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+			$(ui.element).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+
+			siguientes.each(function(index, element) {
+				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
+				$(element).css('width', anchoCategoria + 'px');
+				
+				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
+				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+            });
+			ui.element.css('margin-left', -dif + 'px');
+			ui.element.css('margin-right', dif + 'px');
+		},
+		stop: function(event, ui)
+		{
+			ui.element.css('left', ui.position.left + SinPx(ui.element.css('margin-left')));
+			ui.element.css('margin-left', 0 + 'px');
+			ui.element.css('margin-right', 0 + 'px');
+			$(data).each(function(index, element) {
+				RecalcularPresupuesto(element);
             });
 		}
 	});
@@ -90,11 +160,11 @@ function CargarResultados(data)
 	var	contenedor2 = CrearElemento('div', 'inset-container');
 	$('#resultados').append(contenedor2);
 		var titulo2 = CrearElemento('div','headerName');
-		$(titulo2).html('Ciudad actual');
+		$(titulo2).html('Buenos Aires hoy');
 		$(contenedor2).append(titulo2);
 
-	CargarData(contenedor1, data);
-	CargarData(contenedor2, categoriasGobierno2015);
+	CargarData(contenedor1, data, true);
+	CargarData(contenedor2, categoriasGobierno2015, true);
 
 	$('.container-wrapper').animate({top: '-200%'}, 1000, function()
 		{
@@ -106,7 +176,7 @@ function CargarResultados(data)
 	);
 }
 
-function CargarData(contenedor, data)
+function CargarData(contenedor, data, porcentaje)
 {
 	//Creación del cielo, calle base y contenedor de categorias
 	var sky = CrearElemento('div', 'street-section-sky');
@@ -125,6 +195,8 @@ function CargarData(contenedor, data)
 	window.anchoTotal = $(itemsContainer).outerWidth(true);
 	
 	//Carga de cada categoria en el contenedor con un ancho relativo a su presupuesto
+	var porcentajePromedio = 100 / data.length;
+	var leftAcumulador = 0;
 	data.forEach(function(cat)
 	{
 		var anchoCategoria = cat.presupuesto / window.presupuestoTotal * window.anchoTotal;
@@ -152,6 +224,15 @@ function CargarData(contenedor, data)
 		$(presupuestoCategoria).addClass('presupuestoCategoria');
 		$(presupuestoCategoria).html(FormateoDinero(cat.presupuesto));
 		$(itemCategoria).append(presupuestoCategoria);
+		
+		if(porcentaje)
+		{
+			var porcentajeCategoria = CrearElemento('div', 'porcentajeCategoria');
+			var dif = Math.round(((cat.presupuesto * 100 / presupuestoTotal) - porcentajePromedio) * 100) / 100;
+			$(porcentajeCategoria).html(dif > 0 ? '+'+dif+'%' : +dif+'%');
+			$(porcentajeCategoria).css('color', dif > 0 ? '#70C738' : '#C83637');
+			$(itemCategoria).append(porcentajeCategoria);
+		}
 
 		var imagenesCategoriaContainer = document.createElement('div');
 		$(imagenesCategoriaContainer).addClass('imagenesCategoriaContainer');
@@ -162,6 +243,15 @@ function CargarData(contenedor, data)
 		$(imagenCategoria).css('background-image', 'url(IMG/categorias/'+cat.imagen+')');
 		$(imagenesCategoriaContainer).append(imagenCategoria);
 	});
+}
+
+function RecalcularPresupuesto(element)
+{
+	var e = $('.item-container[data-codigo="'+element.codigo+'"]');
+	var ancho = e.outerWidth(true);
+	element.presupuesto = ancho / window.anchoTotal * window.presupuestoTotal;
+	$(e).children('.presupuestoCategoria').html(FormateoDinero(element.presupuesto));
+	$(e).attr('data-presupuesto', element.presupuesto);
 }
 
 function SinPx(string)
