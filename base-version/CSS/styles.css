@@ -128,20 +128,21 @@ html, body {
 .nombrecategoria {
   position: absolute;
   width: 100%;
-  bottom: 50px;
+  bottom: 40px;
   padding: 0px 10px;
   font-size: 15px;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
-  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  height: 2em;
+  line-height: 1em;
 }
 
 .presupuestoCategoria {
     position: absolute;    width: 100%;    
-    bottom: 25px;    padding: 0px 10px;    font-size: 15px;    
+    bottom: 18px;    padding: 0px 10px;    font-size: 15px;    
     font-weight: normal;    text-transform: uppercase;    text-align: center;
     white-space: nowrap;    text-overflow: ellipsis;    overflow: hidden;
 }
@@ -149,9 +150,9 @@ html, body {
 .porcentajeCategoria {
   position: absolute;
   width: 100%;
-  bottom: 5px;
+  bottom: 3px;
   padding: 0px 10px;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
