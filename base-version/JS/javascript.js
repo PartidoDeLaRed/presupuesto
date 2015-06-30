@@ -1,7 +1,6 @@
 window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
 	$.get('/api/budget/2015', function (data) {
-		debugger;
 		var i = -1;
 		window.categoriasGobierno2015 = data.map(function(budget) {
 			i++;
