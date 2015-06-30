@@ -1,7 +1,19 @@
+window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
-	
-	CargarInicio();
-	
+	$.get('/api/budget/2015', function (data) {
+		var i = -1;
+		window.categoriasGobierno2015 = data.map(function(budget) {
+			i++;
+			return {
+				codigo: i,
+				nombre: budget.category.name,
+				color: DEFAULT_COLOR,
+				presupuesto: budget.amount,
+				imagen: budget.category.image
+			}
+		})
+		CargarInicio();
+	});
 });
 
 function CargarInicio()
@@ -37,7 +49,16 @@ function CargaJuego(data)
 		CargarResultados(data);
 		
 		//Guardar resultado en base de datos
-		//Crear cookie con un identificador del resultado
+		GuardarData(data, function (respuesta)
+		{
+			if (respuesta.status === 200)
+			{
+				var texto = respuesta.responseText;
+				var cookieName = 'mybudget';
+				//Crear cookie con un identificador del resultado
+				document.cookie = cookieName + '=' + texto;
+			}
+		});
     });
 	$('.header').append(terminarJuego);
 	
@@ -310,4 +331,14 @@ function CrearElemento(tag, className)
 	var presupuestoCategoria = document.createElement(tag);
 	$(presupuestoCategoria).addClass(className);
 	return presupuestoCategoria;
+}
+
+function GuardarData(data, cb)
+{
+	$.ajax({
+		type: 'POST',
+		url: '/api/mybudget/',
+		data: { data: data },
+		dataType: 'json'
+	}).always(cb);
 }
