@@ -1,7 +1,6 @@
 window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
 	$.get('/api/budget/2015', function (data) {
-		debugger;
 		var i = -1;
 		window.categoriasGobierno2015 = data.map(function(budget) {
 			i++;
@@ -26,12 +25,12 @@ function CargarInicio()
 	var	subTitulo = CrearElemento('div', 'subTitle');
 	$(subTitulo).html('Hacé como si fueras un/a legislador/a y designá el porcentaje del presupuesto que querés destinar a cada área </br> ¿Qué considerás prioritario? ¿Qué deseás mejorar?');
 	$('#inicio').append(subTitulo);
-	
+
 	var iniciarJuego = CrearElemento('div', 'buttonIniciarJuego');
 	$(iniciarJuego).html('Comenzar');
 	$(iniciarJuego).click(function(e) {
 		CargaJuego(categoriasDefault);
-    });
+		});
 	$('#inicio').append(iniciarJuego);
 }
 
@@ -43,10 +42,17 @@ function CargaJuego(data)
 	$(terminarJuego).html('Terminar');
 	$(terminarJuego).click(function(e) {
 		CargarResultados(data);
-		
+
 		//Guardar resultado en base de datos
-		//Crear cookie con un identificador del resultado
-    });
+		GuardarData(data, function (respuesta)
+		{
+			var texto = respuesta.responseText;
+			var cookieName = 'mybudget';
+			//Crear cookie con un identificador del resultado
+			document.cookie = cookieName + '=' + texto;
+		});
+	});
+
 	$('.header').append(terminarJuego);
 
 	//Interaccion
@@ -65,14 +71,14 @@ function CargaJuego(data)
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 				$(element).css('width', anchoCategoria + 'px');
-            });
+						});
 			ui.element.css('width', ui.size.width + 'px');
 		},
 		stop: function(event, ui)
 		{
 			$(data).each(function(index, element) {
 				RecalcularPresupuesto(element);
-            });
+						});
 		}
 	});
 	$('.item-container:not(:first):not(:last)').resizable({
@@ -96,11 +102,11 @@ function CargaJuego(data)
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
-				
+
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-            });
-			
+						});
+
 			if(direction == 'right')
 				ui.element.css('width', ui.size.width + 'px');
 			else
@@ -116,7 +122,7 @@ function CargaJuego(data)
 			ui.element.css('margin-right', 0 + 'px');
 			$(data).each(function(index, element) {
 				RecalcularPresupuesto(element);
-            });
+						});
 		}
 	});
 	$('.item-container:last').resizable({
@@ -133,10 +139,10 @@ function CargaJuego(data)
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
-				
+
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-            });
+						});
 			ui.element.css('margin-left', -dif + 'px');
 			ui.element.css('margin-right', dif + 'px');
 		},
@@ -147,10 +153,10 @@ function CargaJuego(data)
 			ui.element.css('margin-right', 0 + 'px');
 			$(data).each(function(index, element) {
 				RecalcularPresupuesto(element);
-            });
+						});
 		}
 	});
-	
+
 	//Desplazamiento hacia el contenedor del juego
 	$('.container-wrapper').animate({top: '-100%'}, 1000, function()
 		{
@@ -200,13 +206,13 @@ function CargarData(contenedor, data, porcentaje)
 	$(contenedor).append(base);
 	var itemsContainer = CrearElemento('div', 'items-container');
 	$(contenedor).append(itemsContainer);
-	
+
 	//Calculo de presupuestoTotal en base a la suma de los presupuestos de todas las categoiras
 	window.presupuestoTotal = 0;
 	data.forEach(function(cat){window.presupuestoTotal += cat.presupuesto;});
-	
+
 	window.anchoTotal = $(itemsContainer).outerWidth(true);
-	
+
 	//Carga de cada categoria en el contenedor con un ancho relativo a su presupuesto
 	var porcentajePromedio = 100 / data.length;
 	var leftAcumulador = 0;
@@ -221,12 +227,12 @@ function CargarData(contenedor, data, porcentaje)
 		$(itemCategoria).attr('data-presupuesto', cat.presupuesto);
 		$(itemCategoria).css('width', anchoCategoria+'px');
 		$(itemsContainer).append(itemCategoria);
-		
+
 		var dataContainer = document.createElement('div');
 		$(dataContainer).addClass('dataContainer');
 		$(dataContainer).css('background-color', cat.color);
 		$(itemCategoria).append(dataContainer);
-		
+
 		var nombreCategoria = document.createElement('div');
 		$(nombreCategoria).addClass('nombreCategoria');
 		$(nombreCategoria).html(cat.nombre);
@@ -237,7 +243,7 @@ function CargarData(contenedor, data, porcentaje)
 		$(presupuestoCategoria).addClass('presupuestoCategoria');
 		$(presupuestoCategoria).html(FormateoDinero(cat.presupuesto));
 		$(itemCategoria).append(presupuestoCategoria);
-		
+
 		if(porcentaje)
 		{
 			var porcentajeCategoria = CrearElemento('div', 'porcentajeCategoria');
@@ -250,7 +256,7 @@ function CargarData(contenedor, data, porcentaje)
 		var imagenesCategoriaContainer = document.createElement('div');
 		$(imagenesCategoriaContainer).addClass('imagenesCategoriaContainer');
 		$(itemCategoria).append(imagenesCategoriaContainer);
-		
+
 		var imagenCategoria = document.createElement('div');
 		$(imagenCategoria).addClass('imagenCategoria');
 		$(imagenCategoria).css('background-image', 'url(IMG/categorias/'+cat.imagen+')');
@@ -285,10 +291,10 @@ function Porcentaje(valor, total)
 function FormateoDinero(num)
 {
 	var str = (num/1000000).toFixed(2).toString().split('.');
-    if (str[0].length >= 4) {
-        str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1.');
-    }
-    return '$' + str.join(',') + ' M';
+		if (str[0].length >= 4) {
+				str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1.');
+		}
+		return '$' + str.join(',') + ' M';
 }
 
 function CrearElemento(tag, className)
@@ -296,4 +302,14 @@ function CrearElemento(tag, className)
 	var presupuestoCategoria = document.createElement(tag);
 	$(presupuestoCategoria).addClass(className);
 	return presupuestoCategoria;
+}
+
+function GuardarData(data, cb)
+{
+	$.ajax({
+		type: 'POST',
+		url: '/api/mybudget/',
+		data: { data: data },
+		dataType: 'json'
+	}).always(cb);
 }
