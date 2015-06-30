@@ -6,7 +6,7 @@
 }
 
 .container {
-    max-width: 100%;    margin: 0 auto;    
+    max-width: 100%;    margin: 0 auto;
     /* background-color: #eee; */
     height: 100%;
     position: relative;
@@ -70,15 +70,15 @@ html, body {
 }
 
 .subTitle {
-    position: absolute;    
-    top: 50%;        
+    position: absolute;
+    top: 50%;
     left: 50%;
-    width: 650px;        
+    width: 650px;
     margin-left: -325px;
-    text-align: center;    
-    line-height: 40px;    
-    font-size: 25px;    
-    color: rgba(0,0,0,.4);    
+    text-align: center;
+    line-height: 40px;
+    font-size: 25px;
+    color: rgba(0,0,0,.4);
 }
 
 .buttonIniciarJuego {
@@ -92,8 +92,8 @@ html, body {
     cursor: pointer;
     opacity: .7;
     transition: all 300ms;
-    background-image: url(../IMG/downArrows.png);    
-    background-size: 50px 50px;    
+    background-image: url(../IMG/downArrows.png);
+    background-size: 50px 50px;
     background-position: center 35px;    background-repeat: no-repeat;
 }
 
@@ -141,8 +141,8 @@ html, body {
 }
 
 .presupuestoCategoria {
-    position: absolute;    width: 100%;    
-    bottom: 18px;    padding: 0px 10px;    font-size: 15px;    
+    position: absolute;    width: 100%;
+    bottom: 18px;    padding: 0px 10px;    font-size: 15px;
     font-weight: normal;    text-transform: uppercase;    text-align: center;
     white-space: nowrap;    text-overflow: ellipsis;    overflow: hidden;
 }
@@ -168,13 +168,13 @@ html, body {
     left: 0;
     bottom: 0;
     border-top: 10px solid #aaa;
-    background-color: #ddd;        
+    background-color: #ddd;
 }
 
 .item-container {
-    display: inline-block;      
-    position: relative;   
-    height: 100%; 
+    display: inline-block;
+    position: relative;
+    height: 100%;
     border-width: 0 1px;
     border-style:dashed;
     border-color: rgba(0,0,0,.0);
@@ -328,7 +328,8 @@ html, body {
 	background-color: #a9ccdb;
 }
 
-#inicio .street-section-sky {
+#inicio .street-section-sky,
+#datos .street-section-sky {
     bottom: 0;
 }
 
@@ -351,7 +352,7 @@ html, body {
 }
 .front-clouds {
 	background-image: url(../IMG/sky-front.png);
-	background-size: 500px 500px;    
+	background-size: 500px 500px;
 	height: 500px;
 	border-bottom: 0;
 	bottom: 0;
@@ -392,4 +393,37 @@ html, body {
   background-position:center center;
   background-size:contain;
   background-repeat:no-repeat;
+}
+
+#datos .title {
+  height: 140px;
+  left: 20%;
+  max-width: 60%;
+  right: 20%;
+  top: 32%;
+  height: 140px;
+}
+
+#datos .subTitle {
+  left: 10%;
+  margin-left: 0;
+  top: 55%;
+  width: 80%;
+}
+
+#datos .buttonIniciarJuego {
+  background: none;
+}
+#datos .buttonIniciarJuego:hover {
+  bottom: 30px;
+}
+#datos .buttonIniciarJuego::before {
+  -webkit-transform: rotateX(180deg);
+  -ms-transform: rotateX(180deg);
+  -o-transform: rotateX(180deg);
+  transform: rotateX(180deg);
+  display: block;
+  height: 60px;
+  margin: 0 auto;
+  width: 60px;
 }
