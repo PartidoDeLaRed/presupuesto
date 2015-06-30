@@ -1,24 +1,16 @@
-window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
-	$.get('/api/budget/2015', function (data) {
-		debugger;
-		var i = -1;
-		window.categoriasGobierno2015 = data.map(function(budget) {
-			i++;
-			return {
-				codigo: i,
-				nombre: budget.category.name,
-				color: DEFAULT_COLOR,
-				presupuesto: budget.amount,
-				imagen: budget.category.image
-			}
-		})
-		CargarInicio();
-	});
+	
+	CargarInicio();
+	
 });
 
 function CargarInicio()
 {
+	var sky = CrearElemento('div', 'street-section-sky');
+	$('#inicio').append(sky);
+		$(sky).append(CrearElemento('div', 'rear-clouds'));
+		$(sky).append(CrearElemento('div', 'front-clouds'));
+
 	var	titulo = CrearElemento('div', 'title');
 	$(titulo).html('Armá tu ciudad');
 	$('#inicio').append(titulo);
@@ -48,6 +40,10 @@ function CargaJuego(data)
 		//Crear cookie con un identificador del resultado
     });
 	$('.header').append(terminarJuego);
+	
+	var dineroTotal = CrearElemento('div','total-dinero');
+	$(dineroTotal).html('Presupuesto Total: '+FormateoDinero(window.presupuestoTotal));
+	$('#juego').append(dineroTotal);
 
 	//Interaccion
 	$('.item-container:first').resizable({
@@ -156,7 +152,7 @@ function CargaJuego(data)
 		{
 			setTimeout(function(){
 				$('.item-container').css('border-color', 'rgba(0,0,0,.1)');
-				$('.header').animate({top:0}, 300);
+				$('.header').animate({top:0}, 500);
 			}, 200);
 		}
 	);
@@ -164,6 +160,16 @@ function CargaJuego(data)
 
 function CargarResultados(data)
 {
+	$('.finishButton').animate({opacity:0}, 500, function(){
+		$('.finishButton').remove();
+		var masInfo = CrearElemento('div', 'finishButton');
+		$(masInfo).html('Mas info');
+		$(masInfo).click(function(e) {
+			CargarMasInfo();
+		});
+		$('.header').append(masInfo);
+	});
+	
 	var	contenedor1 = CrearElemento('div', 'inset-container');
 	$('#resultados').append(contenedor1);
 		var titulo1 = CrearElemento('div','headerName');
@@ -182,11 +188,19 @@ function CargarResultados(data)
 	$('.container-wrapper').animate({top: '-200%'}, 1000, function()
 		{
 			setTimeout(function(){
-				$('.header').animate({top:'-85px'}, 300);
-				$('.inset-container').animate({opacity:1}, 700);
+				$('.inset-container').each(function(index, element) {
+					setTimeout(function(){
+						$(element).animate({opacity:1}, 700);
+					}, 300);
+                });
 			}, 200);
 		}
 	);
+}
+
+function CargarMasInfo()
+{
+	//Cargar información en #datos
 }
 
 function CargarData(contenedor, data, porcentaje)
