@@ -30,7 +30,7 @@ function CargarInicio()
 	var	subTitulo = CrearElemento('div', 'subTitle');
 	$(subTitulo).html('Hacé como si fueras un/a legislador/a y designá el porcentaje del presupuesto que querés destinar a cada área </br> ¿Qué considerás prioritario? ¿Qué deseás mejorar?');
 	$('#inicio').append(subTitulo);
-	
+
 	var iniciarJuego = CrearElemento('div', 'buttonIniciarJuego');
 	$(iniciarJuego).html('Comenzar');
 	$(iniciarJuego).click(function(e) {
@@ -47,7 +47,7 @@ function CargaJuego(data)
 	$(terminarJuego).html('Terminar');
 	$(terminarJuego).click(function(e) {
 		CargarResultados(data);
-		
+
 		//Guardar resultado en base de datos
 		GuardarData(data, function (respuesta)
 		{
@@ -61,7 +61,7 @@ function CargaJuego(data)
 		});
     });
 	$('.header').append(terminarJuego);
-	
+
 	var dineroTotal = CrearElemento('div','total-dinero');
 	$(dineroTotal).html('Presupuesto Total: '+FormateoDinero(window.presupuestoTotal));
 	$('#juego').append(dineroTotal);
@@ -113,11 +113,11 @@ function CargaJuego(data)
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
-				
+
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
             });
-			
+
 			if(direction == 'right')
 				ui.element.css('width', ui.size.width + 'px');
 			else
@@ -150,7 +150,7 @@ function CargaJuego(data)
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
-				
+
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
             });
@@ -167,7 +167,7 @@ function CargaJuego(data)
             });
 		}
 	});
-	
+
 	//Desplazamiento hacia el contenedor del juego
 	$('.container-wrapper').animate({top: '-100%'}, 1000, function()
 		{
@@ -190,7 +190,7 @@ function CargarResultados(data)
 		});
 		$('.header').append(masInfo);
 	});
-	
+
 	var	contenedor1 = CrearElemento('div', 'inset-container');
 	$('#resultados').append(contenedor1);
 		var titulo1 = CrearElemento('div','headerName');
@@ -221,7 +221,56 @@ function CargarResultados(data)
 
 function CargarMasInfo()
 {
+	// Información
+	var info = {
+		titulo: '¿Cómo se formula el presupuesto porteño?',
+		descripcion: 'Cada año, a partir de un proyecto que envía el Jefe de gobierno, la Legislatura porteña sanciona la ley de Presupuesto de la ciudad, que estipula la distribución de los fondos para cada área de gobierno.<br />Las prioridades de gestión de gobierno, así como el mantenimiento del estado, se deciden en el presupuesto.'
+	};
+
 	//Cargar información en #datos
+	var $datos = $('#datos');
+
+	var $sky = $(CrearElemento('div', 'street-section-sky'));
+	$sky.append(CrearElemento('div', 'rear-clouds'));
+	$sky.append(CrearElemento('div', 'front-clouds'));
+
+	var $titulo = $(CrearElemento('div', 'title'));
+	$titulo.html(info.titulo);
+
+	var $descripcion = $(CrearElemento('div', 'subTitle'));
+	$descripcion.html(info.descripcion);
+
+	var $volverInicio = $(CrearElemento('div', 'buttonIniciarJuego'));
+	$volverInicio.html('Volver a armar');
+	$volverInicio.click(function(e) {
+		// vaciamos el contenido de #juego
+		$('#juego').html('');
+		// y volvemos a ejecutar CargaJuego
+		CargaJuego(categoriasDefault);
+
+		// esperamos que termine de subír y borramos los resultados
+		// y los datos
+		setTimeout(function ()
+		{
+			$('#resultados').html('');
+			$datos.html('');
+		}, 1000)
+	});
+
+	$datos.append($sky);
+	$datos.append($titulo);
+	$datos.append($descripcion);
+	$datos.append($volverInicio);
+
+	//Desplazamiento hacia el contenedor de más info
+	$('.container-wrapper').animate({top: '-300%'}, 1000, function()
+		{
+			setTimeout(function(){
+				$('.item-container').css('border-color', 'rgba(0,0,0,.1)');
+				$('.header').animate({top:'-100%'}, 500);
+			}, 200);
+		}
+	);
 }
 
 function CargarData(contenedor, data, porcentaje)
@@ -235,13 +284,13 @@ function CargarData(contenedor, data, porcentaje)
 	$(contenedor).append(base);
 	var itemsContainer = CrearElemento('div', 'items-container');
 	$(contenedor).append(itemsContainer);
-	
+
 	//Calculo de presupuestoTotal en base a la suma de los presupuestos de todas las categoiras
 	window.presupuestoTotal = 0;
 	data.forEach(function(cat){window.presupuestoTotal += cat.presupuesto;});
-	
+
 	window.anchoTotal = $(itemsContainer).outerWidth(true);
-	
+
 	//Carga de cada categoria en el contenedor con un ancho relativo a su presupuesto
 	var porcentajePromedio = 100 / data.length;
 	var leftAcumulador = 0;
@@ -256,12 +305,12 @@ function CargarData(contenedor, data, porcentaje)
 		$(itemCategoria).attr('data-presupuesto', cat.presupuesto);
 		$(itemCategoria).css('width', anchoCategoria+'px');
 		$(itemsContainer).append(itemCategoria);
-		
+
 		var dataContainer = document.createElement('div');
 		$(dataContainer).addClass('dataContainer');
 		$(dataContainer).css('background-color', cat.color);
 		$(itemCategoria).append(dataContainer);
-		
+
 		var nombreCategoria = document.createElement('div');
 		$(nombreCategoria).addClass('nombreCategoria');
 		$(nombreCategoria).html(cat.nombre);
@@ -272,7 +321,7 @@ function CargarData(contenedor, data, porcentaje)
 		$(presupuestoCategoria).addClass('presupuestoCategoria');
 		$(presupuestoCategoria).html(FormateoDinero(cat.presupuesto));
 		$(itemCategoria).append(presupuestoCategoria);
-		
+
 		if(porcentaje)
 		{
 			var porcentajeCategoria = CrearElemento('div', 'porcentajeCategoria');
@@ -285,7 +334,7 @@ function CargarData(contenedor, data, porcentaje)
 		var imagenesCategoriaContainer = document.createElement('div');
 		$(imagenesCategoriaContainer).addClass('imagenesCategoriaContainer');
 		$(itemCategoria).append(imagenesCategoriaContainer);
-		
+
 		var imagenCategoria = document.createElement('div');
 		$(imagenCategoria).addClass('imagenCategoria');
 		$(imagenCategoria).css('background-image', 'url(IMG/categorias/'+cat.imagen+')');
