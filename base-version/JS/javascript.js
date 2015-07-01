@@ -30,7 +30,7 @@ function CargarInicio()
 	var	subTitulo = CrearElemento('div', 'subTitle');
 	$(subTitulo).html('Hacé como si fueras un/a legislador/a y designá el porcentaje del presupuesto que querés destinar a cada área </br> ¿Qué considerás prioritario? ¿Qué deseás mejorar?');
 	$('#inicio').append(subTitulo);
-
+	
 	var iniciarJuego = CrearElemento('div', 'buttonIniciarJuego');
 	$(iniciarJuego).html('Comenzar');
 	$(iniciarJuego).click(function(e) {
@@ -47,7 +47,7 @@ function CargaJuego(data)
 	$(terminarJuego).html('Terminar');
 	$(terminarJuego).click(function(e) {
 		CargarResultados(data);
-
+		
 		//Guardar resultado en base de datos
 		GuardarData(data, function (respuesta)
 		{
@@ -61,7 +61,7 @@ function CargaJuego(data)
 		});
     });
 	$('.header').append(terminarJuego);
-
+	
 	var dineroTotal = CrearElemento('div','total-dinero');
 	$(dineroTotal).html('Presupuesto Total: '+FormateoDinero(window.presupuestoTotal));
 	$('#juego').append(dineroTotal);
@@ -113,11 +113,11 @@ function CargaJuego(data)
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
-
+				
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
             });
-
+			
 			if(direction == 'right')
 				ui.element.css('width', ui.size.width + 'px');
 			else
@@ -150,7 +150,7 @@ function CargaJuego(data)
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
-
+				
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
 				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
             });
@@ -167,13 +167,15 @@ function CargaJuego(data)
             });
 		}
 	});
-
+	
 	//Desplazamiento hacia el contenedor del juego
 	$('.container-wrapper').animate({top: '-100%'}, 1000, function()
 		{
 			setTimeout(function(){
 				$('.item-container').css('border-color', 'rgba(0,0,0,.1)');
-				$('.header').animate({top:0}, 500);
+				$('.header').animate({top:0}, 500, function(){
+					$(dineroTotal).slideDown('fast');
+				});
 			}, 200);
 		}
 	);
@@ -183,38 +185,66 @@ function CargarResultados(data)
 {
 	$('.finishButton').animate({opacity:0}, 500, function(){
 		$('.finishButton').remove();
-		var masInfo = CrearElemento('div', 'finishButton');
-		$(masInfo).html('Mas info');
-		$(masInfo).click(function(e) {
-			CargarMasInfo();
-		});
-		$('.header').append(masInfo);
 	});
-
+	
 	var	contenedor1 = CrearElemento('div', 'inset-container');
-	$('#resultados').append(contenedor1);
+	$('#resultados').append(CrearElemento('div', 'wrapper-half-height').append(contenedor1));
+		$(contenedor1).append(CrearElemento('div','wrapper'));
+
 		var titulo1 = CrearElemento('div','headerName');
 		$(titulo1).html('Tu ciudad');
-		$(contenedor1).append(titulo1);
+		$(contenedor1).append(CrearElemento('div','wrapper-bottom').append(titulo1));
 
 	var	contenedor2 = CrearElemento('div', 'inset-container');
-	$('#resultados').append(contenedor2);
-		var titulo2 = CrearElemento('div','headerName');
-		$(titulo2).html('Buenos Aires hoy');
-		$(contenedor2).append(titulo2);
+	$('#resultados').append(CrearElemento('div', 'wrapper-half-height').append(contenedor2));
+		$(contenedor2).append(CrearElemento('div','wrapper'));
+		
+		var wrapper = CrearElemento('div','wrapper-bottom');
+		$(contenedor2).append(wrapper);
 
-	CargarData(contenedor1, data, true);
-	CargarData(contenedor2, categoriasGobierno2015, true);
+			var botonTitulo2Hoy = CrearElemento('div','headerName button selected');
+			$(botonTitulo2Hoy).html('Buenos Aires hoy');
+			$(botonTitulo2Hoy).click(function(e) {
+                CargarData(contenedor2.children()[0], categoriasGobierno2015, true);
+				$('.selected').removeClass('selected');
+				$(this).addClass('selected');
+            });
+			$(wrapper).append(botonTitulo2Hoy);
+			
+			var botonTitulo2Promedio = CrearElemento('div','headerName button');
+			$(botonTitulo2Promedio).html('Lo que piensan los ciudadanos');
+			$(botonTitulo2Promedio).click(function(e) {
+                CargarData(contenedor2.children()[0], categoriasDefault, true);
+				$('.selected').removeClass('selected');
+				$(this).addClass('selected');
+            });
+			$(wrapper).append(botonTitulo2Promedio);
+		
+
+	CargarData(contenedor1.children()[0], data, true);
+	CargarData(contenedor2.children()[0], categoriasGobierno2015, true);
+
+	var base = CrearElemento('div', 'items-base');
+	$('#resultados').append(base);
+
+	var masInfo = CrearElemento('div', 'buttonIniciarJuego');
+	$(masInfo).html('Más información');
+	$(masInfo).click(function(e) {
+		CargarMasInfo();
+	});
+	$('#resultados').append(masInfo);
 
 	$('.container-wrapper').animate({top: '-200%'}, 1000, function()
 		{
 			setTimeout(function(){
+				var i = 1;
 				$('.inset-container').each(function(index, element) {
 					setTimeout(function(){
 						$(element).animate({opacity:1}, 700);
-					}, 300);
+					}, i * 100);
+					i++;
                 });
-			}, 200);
+			}, 100);
 		}
 	);
 }
@@ -229,10 +259,6 @@ function CargarMasInfo()
 
 	//Cargar información en #datos
 	var $datos = $('#datos');
-
-	var $sky = $(CrearElemento('div', 'street-section-sky'));
-	$sky.append(CrearElemento('div', 'rear-clouds'));
-	$sky.append(CrearElemento('div', 'front-clouds'));
 
 	var $titulo = $(CrearElemento('div', 'title'));
 	$titulo.html(info.titulo);
@@ -257,7 +283,6 @@ function CargarMasInfo()
 		}, 1000)
 	});
 
-	$datos.append($sky);
 	$datos.append($titulo);
 	$datos.append($descripcion);
 	$datos.append($volverInicio);
@@ -275,6 +300,9 @@ function CargarMasInfo()
 
 function CargarData(contenedor, data, porcentaje)
 {
+	//Borro el contenido del contenedor
+	$(contenedor).html('');
+	
 	//Creación del cielo, calle base y contenedor de categorias
 	var sky = CrearElemento('div', 'street-section-sky');
 	$(contenedor).append(sky);
@@ -284,13 +312,13 @@ function CargarData(contenedor, data, porcentaje)
 	$(contenedor).append(base);
 	var itemsContainer = CrearElemento('div', 'items-container');
 	$(contenedor).append(itemsContainer);
-
+	
 	//Calculo de presupuestoTotal en base a la suma de los presupuestos de todas las categoiras
 	window.presupuestoTotal = 0;
 	data.forEach(function(cat){window.presupuestoTotal += cat.presupuesto;});
-
+	
 	window.anchoTotal = $(itemsContainer).outerWidth(true);
-
+	
 	//Carga de cada categoria en el contenedor con un ancho relativo a su presupuesto
 	var porcentajePromedio = 100 / data.length;
 	var leftAcumulador = 0;
@@ -305,36 +333,38 @@ function CargarData(contenedor, data, porcentaje)
 		$(itemCategoria).attr('data-presupuesto', cat.presupuesto);
 		$(itemCategoria).css('width', anchoCategoria+'px');
 		$(itemsContainer).append(itemCategoria);
-
+		
 		var dataContainer = document.createElement('div');
 		$(dataContainer).addClass('dataContainer');
 		$(dataContainer).css('background-color', cat.color);
 		$(itemCategoria).append(dataContainer);
-
+		
+		var textContainer = CrearElemento('div', 'textDataContainer');
+		$(itemCategoria).append(textContainer);
+		
 		var nombreCategoria = document.createElement('div');
 		$(nombreCategoria).addClass('nombreCategoria');
 		$(nombreCategoria).html(cat.nombre);
 		$(nombreCategoria).attr('title', cat.nombre);
-		$(itemCategoria).append(nombreCategoria);
-
-		var presupuestoCategoria = document.createElement('div');
-		$(presupuestoCategoria).addClass('presupuestoCategoria');
-		$(presupuestoCategoria).html(FormateoDinero(cat.presupuesto));
-		$(itemCategoria).append(presupuestoCategoria);
+		$(textContainer).append(nombreCategoria);
 
 		if(porcentaje)
 		{
 			var porcentajeCategoria = CrearElemento('div', 'porcentajeCategoria');
-			var dif = Math.round(((cat.presupuesto * 100 / presupuestoTotal) - porcentajePromedio) * 100) / 100;
-			$(porcentajeCategoria).html(dif > 0 ? '+'+dif+'%' : +dif+'%');
-			$(porcentajeCategoria).css('color', dif > 0 ? '#70C738' : '#C83637');
-			$(itemCategoria).append(porcentajeCategoria);
+			var dif = Math.round((cat.presupuesto * 100 / presupuestoTotal) * 100) / 100;
+			$(porcentajeCategoria).html(dif+'%');
+			$(textContainer).append(porcentajeCategoria);
 		}
 
+		var presupuestoCategoria = document.createElement('div');
+		$(presupuestoCategoria).addClass('presupuestoCategoria');
+		$(presupuestoCategoria).html(FormateoDinero(cat.presupuesto));
+		$(textContainer).append(presupuestoCategoria);
+		
 		var imagenesCategoriaContainer = document.createElement('div');
 		$(imagenesCategoriaContainer).addClass('imagenesCategoriaContainer');
-		$(itemCategoria).append(imagenesCategoriaContainer);
-
+		$(dataContainer).append(imagenesCategoriaContainer);
+		
 		var imagenCategoria = document.createElement('div');
 		$(imagenCategoria).addClass('imagenCategoria');
 		$(imagenCategoria).css('background-image', 'url(IMG/categorias/'+cat.imagen+')');
@@ -379,7 +409,7 @@ function CrearElemento(tag, className)
 {
 	var presupuestoCategoria = document.createElement(tag);
 	$(presupuestoCategoria).addClass(className);
-	return presupuestoCategoria;
+	return $(presupuestoCategoria);
 }
 
 function GuardarData(data, cb)

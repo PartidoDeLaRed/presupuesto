@@ -6,7 +6,7 @@
 }
 
 .container {
-    max-width: 100%;    margin: 0 auto;
+    max-width: 100%;    margin: 0 auto;    
     /* background-color: #eee; */
     height: 100%;
     position: relative;
@@ -23,10 +23,10 @@
 
 .inset-container {
   position: relative;
-  height: 45%;
+  height: 95%;
   width: 95%;
   /* overflow: hidden; */
-  margin: 30px auto;
+  margin: 5px auto;
   border: 10px solid rgb(255,255,255);
   border-bottom-width: 50px;
   border-image-source: initial;
@@ -45,12 +45,12 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
+    cursor: default;
 }
 
 html, body {
     width: 100%;
-    height: 100%;
-    position: absolute;
+    position: relative;
     left: 0;
     top: 0;
     background-color: #a9ccdb;
@@ -70,36 +70,41 @@ html, body {
 }
 
 .subTitle {
-    position: absolute;
-    top: 50%;
+    position: absolute;    
+    top: 50%;        
     left: 50%;
-    width: 650px;
+    width: 650px;        
     margin-left: -325px;
-    text-align: center;
-    line-height: 40px;
-    font-size: 25px;
-    color: rgba(0,0,0,.4);
+    text-align: center;    
+    line-height: 40px;    
+    font-size: 25px;    
+    color: rgba(0,0,0,.4);    
 }
 
 .buttonIniciarJuego {
     width: 100%;
-    height: 100px;
+    height: 80px;
     position: absolute;
-    bottom: 10px;
+    bottom: 0;
     text-align: center;
     font-size: 20px;
     text-transform: uppercase;
     cursor: pointer;
     opacity: .7;
     transition: all 300ms;
-    background-image: url(../IMG/downArrows.png);
-    background-size: 50px 50px;
+    background-image: url(../IMG/downArrows.png);    
+    background-size: 40px 40px;    
     background-position: center 35px;    background-repeat: no-repeat;
+}
+
+#resultados > .buttonIniciarJuego {
+    color: #eee;
+    background-image: url(../IMG/downArrows-white.png);
 }
 
 .buttonIniciarJuego:hover {
     opacity: 1;
-    bottom: 0;
+    bottom: -10px;
     transition: all 300ms;
 }
 
@@ -125,10 +130,27 @@ html, body {
   bottom: 90px;
 }
 
+.textDataContainer {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    bottom: 0;
+    left: 0;
+    background-color: #ddd;
+    transition: all 300ms;
+}
+
+.textDataContainer:hover {
+    min-width: 160px;
+    z-index: 1000;
+    box-shadow: 0 1px 1px rgba(0,0,0,.2);
+    transition: all 300ms;
+}
+
 .nombrecategoria {
   position: absolute;
   width: 100%;
-  bottom: 40px;
+  bottom: 48px;
   padding: 0px 10px;
   font-size: 15px;
   font-weight: bold;
@@ -141,24 +163,26 @@ html, body {
 }
 
 .presupuestoCategoria {
-    position: absolute;    width: 100%;
-    bottom: 18px;    padding: 0px 10px;    font-size: 15px;
+    position: absolute;    width: 100%;    
+    bottom: 5px;    padding: 0px 10px;    font-size: 15px;    
     font-weight: normal;    text-transform: uppercase;    text-align: center;
     white-space: nowrap;    text-overflow: ellipsis;    overflow: hidden;
+    color: #777;
 }
 
 .porcentajeCategoria {
   position: absolute;
   width: 100%;
-  bottom: 3px;
+  bottom: 16px;
   padding: 0px 10px;
-  font-size: 13px;
+  font-size: 29px;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  color: #169CBF;
 }
 
 .items-base {
@@ -168,17 +192,22 @@ html, body {
     left: 0;
     bottom: 0;
     border-top: 10px solid #aaa;
-    background-color: #ddd;
+    background-color: #ddd;        
+}
+
+#resultados > .items-base {
+    border-color: #615343;
+    background-color: #3F372E;
+    color: #eee;
 }
 
 .item-container {
-    display: inline-block;
-    position: relative;
-    height: 100%;
+    display: inline-block;      
+    position: relative;   
+    height: 100%; 
     border-width: 0 1px;
     border-style:dashed;
     border-color: rgba(0,0,0,.0);
-    overflow: hidden;
     text-align: center;
 	transition:border 300ms;
 }
@@ -191,6 +220,7 @@ html, body {
 .item-icono {
     background-image: url(../IMG/categorias/saludIcon.png);
     background-repeat: no-repeat;
+
     background-position: center;
     background-size: contain;
     height: 200px;
@@ -215,7 +245,7 @@ html, body {
     position: absolute;
     width: 100%;
     height: 80%;
-    bottom: 90px;
+    bottom: 0;
     text-align: center;
 }
 
@@ -248,14 +278,35 @@ html, body {
 }
 
 .inset-container .headerName {
-    top: auto;
-    bottom: -50px;
+    position: static;
+    display: inline-block;
     background-color: #fff;
-    width: 250px;
     font-size: 25px;
-    left: 0;
-    margin-left: 10px;
-    text-align: left;
+    margin-left: 0;
+    text-align: center;
+    width: auto;
+    height: 40px;
+    line-height: 28px;
+    padding: 5px 30px;
+    margin: 5px;
+}
+
+.headerName.button:hover {
+    background-color: #169CBF;
+    color: #eee;
+}
+
+.headerName.button.selected {
+    background-color: #169CBF;    color: #eee;
+}
+
+.headerName.button {
+    border: 1px solid #ddd;
+    border-bottom-width: 2px;
+    border-radius: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #eee;
 }
 
 .inset-container .street-section-sky {
@@ -299,6 +350,59 @@ html, body {
 
 #resultados {
     padding-top: 50px;
+    padding-bottom: 100px;
+}
+
+.wrapper-half-height {
+    height: 50%;
+    position: relative;
+    top: 0;
+}
+
+.wrapper-bottom {
+    position: absolute;
+    bottom: -50px;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+}
+
+#datos .title {
+  height: 140px;
+  left: 20%;
+  max-width: 60%;
+  right: 20%;
+  top: 32%;
+  height: 140px;
+  color:rgba(255,255,255,.8);
+}
+
+#datos .subTitle {
+  left: 10%;
+  margin-left: 0;
+  top: 55%;
+  width: 80%;
+  color:rgba(255,255,255,.6);
+}
+
+#datos .buttonIniciarJuego {
+  background: none;
+  color:#eee;
+  bottom:10px;
+}
+#datos .buttonIniciarJuego:hover {
+  bottom: 30px;
+}
+#datos .buttonIniciarJuego::before {
+  background-image: url(../IMG/downArrows-white.png);
+  -webkit-transform: rotateX(180deg);
+  -ms-transform: rotateX(180deg);
+  -o-transform: rotateX(180deg);
+  transform: rotateX(180deg);
+  display: block;
+  height: 60px;
+  margin: 0 auto;
+  width: 60px;
 }
 
 .total-dinero {
@@ -314,6 +418,7 @@ html, body {
     font-size: 20px;
     background-color: #eee;
     border-radius: 0 0 5px 5px;
+	display:none;
 }
 
 .street-section-sky {
@@ -328,8 +433,8 @@ html, body {
 	background-color: #a9ccdb;
 }
 
-#inicio .street-section-sky,
-#datos .street-section-sky {
+
+#inicio .street-section-sky {
     bottom: 0;
 }
 
@@ -341,22 +446,19 @@ html, body {
 
 .rear-clouds {
 	background-image: url(../IMG/sky-rear.png);
-	bottom: 330px;
-	background-size: 600px 300px;
-	height: 300px;
+	background-size: contain;
+	height: 215px;
 }
 
 .street-section-sky .front-clouds {
-	bottom: 370px;
+	bottom: 0;
 	z-index: auto;
 }
 .front-clouds {
 	background-image: url(../IMG/sky-front.png);
-	background-size: 500px 500px;
-	height: 500px;
-	border-bottom: 0;
+	background-size: contain;    
+	height: 280px;
 	bottom: 0;
-	border-bottom: 100px solid #a5c4d1;
 }
 
 .rear-clouds, .front-clouds {
@@ -395,35 +497,94 @@ html, body {
   background-repeat:no-repeat;
 }
 
-#datos .title {
-  height: 140px;
-  left: 20%;
-  max-width: 60%;
-  right: 20%;
-  top: 32%;
-  height: 140px;
+
+/*Footer*/
+
+.footerContainer {
+  text-align: center;
+  width: 100%;
+  background: #169CBF;
+  color: #F5F7FA;
 }
 
-#datos .subTitle {
-  left: 10%;
-  margin-left: 0;
-  top: 55%;
-  width: 80%;
+.linksContainer {
+    margin: 10px 0;
+    font-size: 18px;
 }
 
-#datos .buttonIniciarJuego {
-  background: none;
+.linksContainer a {
+    color: #eee;
+    text-decoration: none;
+    margin: 0 7px;
+    border-bottom: 1px dotted;
+	transition:all 300ms;
 }
-#datos .buttonIniciarJuego:hover {
-  bottom: 30px;
+.linksContainer a:hover {
+	color:#fff;
+	border-bottom:1px solid;
+	transition:all 300ms;
 }
-#datos .buttonIniciarJuego::before {
-  -webkit-transform: rotateX(180deg);
-  -ms-transform: rotateX(180deg);
-  -o-transform: rotateX(180deg);
-  transform: rotateX(180deg);
-  display: block;
-  height: 60px;
-  margin: 0 auto;
-  width: 60px;
+
+.contactContainer {
+    margin: 20px 0;
+	display:inline-block;
+}
+
+.contactContainer a {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+	background-position:center;
+	background-repeat:no-repeat;
+	background-size:contain;
+    margin: 5px 5px;
+	opacity:.8;
+	transition:all 300ms;
+}
+.contactContainer a:hover {
+	opacity:1;
+	transition:all 300ms;
+}
+.contactContainer a.page {
+    background-image: url(../IMG/webIcon.png);
+}
+.contactContainer a.facebook {
+    background-image: url(../IMG/facebookIcon.png);
+}
+.contactContainer a.twitter {
+    background-image: url(../IMG/twitterIcon.png);
+}
+.contactContainer a.google {
+    background-image: url(../IMG/googleplusIcon.png);
+}
+
+.creditsContainer {
+    border-top: 1px solid #96CEDD;
+    background-color: #96CEDD;
+    color: #0A728D;
+    padding: 10px 0;
+}
+
+.heartIcon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-image: url(../IMG/heartIcon.png);
+	background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    vertical-align: bottom;
+}
+
+.logoPartido {
+  margin: auto;
+  width: 240px;
+  max-width: 240px;
+  height: 240px;
+  background-image: url(../IMG/Isologo.gif);
+  background-size: cover;
+  background-position: center center;
+  border-radius: 125px;
+  box-shadow: 0 0 10px rgba(0,0,0,.5);
+  display: inline-block;
 }
