@@ -1,0 +1,52 @@
+[
+  {
+    "year": 2015,
+    "name": "Educación",
+    "amount": 19025791407
+  },
+  {
+    "year": 2015,
+    "name": "Salud",
+    "amount": 16664749935
+  },
+  {
+    "year": 2015,
+    "name": "Ecología y Medio Ambiente",
+    "amount": 11782190492
+  },
+  {
+    "year": 2015,
+    "name": "Administración y Legislación",
+    "amount": 10654180079
+  },
+  {
+    "year": 2015,
+    "name": "Seguridad y Justicia",
+    "amount": 9488350848
+  },
+  {
+    "year": 2015,
+    "name": "Promoción y Acción Social",
+    "amount": 8624420258
+  },
+  {
+    "year": 2015,
+    "name": "Transporte",
+    "amount": 3577366683
+  },
+  {
+    "year": 2015,
+    "name": "Cultura y Turismo",
+    "amount": 2805173093
+  },
+  {
+    "year": 2015,
+    "name": "Vivienda",
+    "amount": 2080872723
+  },
+  {
+    "year": 2015,
+    "name": "Trabajo e Industria",
+    "amount": 977511993
+  }
+]

@@ -10,6 +10,7 @@ import './gulp/lint'
 import './gulp/clean'
 import './gulp/public'
 import './gulp/serve'
+import './gulp/fixtures'
 
 import gulp from 'gulp'
 

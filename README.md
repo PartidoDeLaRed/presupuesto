@@ -10,6 +10,11 @@
 3. `npm start`
 4. Browse to http://localhost:8000
 
+## Loading sample data to DB
+`gulp fixtures`
+
+*Note: this will load data to the default database (`presupuesto-dev`). You may tweak this manually or by editing your `config`*
+
 ## How to setup deploy to Heroku
 You have to set up a new git remote pointing to the Heroku repo:
 ```
