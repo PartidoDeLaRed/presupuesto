@@ -1,4 +1,5 @@
 import gulp from 'gulp'
+import util from 'gulp-util'
 import config from '../lib/config'
 import mongoose from 'mongoose'
 
@@ -8,26 +9,23 @@ import budgets from '../fixtures/budgets'
 import Category from '../lib/data/models/category'
 import Budget from '../lib/data/models/budget'
 
-
-gulp.task('fixtures', () => {
+gulp.task('fixtures', done => {
   // Connect to the database
   mongoose.connect(config.dbURI);
+  util.log('Creating fixtures in DB:', util.colors.magenta(config.dbURI))
 
-  console.log('Creating fixtures in db: ', config.dbURI)
-
-  Category.create(categories).then((savedCats) => {
-    console.log('Saved %s categories to DB', savedCats.length)
+  Category.create(categories)
+  .then(savedCats => {
+    util.log('Saved %s categories to DB', util.colors.green(savedCats.length))
 
     budgets.forEach((b) => {
-      let cat = savedCats.find((c) => {return c.name == b.name})
+      const cat = savedCats.find(c => c.name == b.name)
       b.category = cat._id
     })
 
-    Budget.create(budgets).then((savedBudgets) => {
-      console.log('Saved %s budgets to DB', savedBudgets.length)
-    }).then(() => {
-    mongoose.disconnect()
-    return console.log('Finished saving fixtures to DB')
-  })
+    Budget.create(budgets)
+    .then(savedBudgets => util.log('Saved %s budgets to DB', util.colors.green(savedBudgets.length)))
+    .then(() => mongoose.disconnect())
+    .then(() => done())
   })
 })
