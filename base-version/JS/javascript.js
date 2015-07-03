@@ -191,16 +191,33 @@ function CargarResultados(data)
 	$('#resultados').append(CrearElemento('div', 'wrapper-half-height').append(contenedor1));
 		$(contenedor1).append(CrearElemento('div','wrapper'));
 
-		var titulo1 = CrearElemento('div','headerName');
-		$(titulo1).html('Tu ciudad');
-		$(contenedor1).append(CrearElemento('div','wrapper-bottom').append(titulo1));
+		var wrapper1 = CrearElemento('div','wrapper-bottom');
+		$(contenedor1).append(wrapper1);
+
+			var titulo1 = CrearElemento('div','headerName');
+			$(titulo1).html('Tu ciudad');
+			$(wrapper1).append(titulo1);
+	
+			var shareFacebook = CrearElemento('div','shareButtonFacebook');
+			$(shareFacebook).html('Compartila en Facebook');
+			$(shareFacebook).click(function(e) {
+                ShareButtonFacebook(window.location.href, 'Así armé el presupuesto para la ciudad', 'Armá el tuyo en armatuciudad.com.ar', location.origin+location.pathname+'IMG/shareImage.png');
+            });
+			$(wrapper1).append(shareFacebook);
+	
+			var shareTwitter = CrearElemento('div','shareButtonTwitter');
+			$(shareTwitter).html('Compartila en Twitter');
+			$(shareTwitter).click(function(e) {
+                ShareButtonTwitter(window.location.href, 'Así armé el presupuesto para la ciudad ');
+            });
+			$(wrapper1).append(shareTwitter);
 
 	var	contenedor2 = CrearElemento('div', 'inset-container');
 	$('#resultados').append(CrearElemento('div', 'wrapper-half-height').append(contenedor2));
 		$(contenedor2).append(CrearElemento('div','wrapper'));
 		
-		var wrapper = CrearElemento('div','wrapper-bottom');
-		$(contenedor2).append(wrapper);
+		var wrapper2 = CrearElemento('div','wrapper-bottom');
+		$(contenedor2).append(wrapper2);
 
 			var botonTitulo2Hoy = CrearElemento('div','headerName button selected');
 			$(botonTitulo2Hoy).html('Buenos Aires hoy');
@@ -209,7 +226,7 @@ function CargarResultados(data)
 				$('.selected').removeClass('selected');
 				$(this).addClass('selected');
             });
-			$(wrapper).append(botonTitulo2Hoy);
+			$(wrapper2).append(botonTitulo2Hoy);
 			
 			var botonTitulo2Promedio = CrearElemento('div','headerName button');
 			$(botonTitulo2Promedio).html('Lo que piensan los ciudadanos');
@@ -218,7 +235,7 @@ function CargarResultados(data)
 				$('.selected').removeClass('selected');
 				$(this).addClass('selected');
             });
-			$(wrapper).append(botonTitulo2Promedio);
+			$(wrapper2).append(botonTitulo2Promedio);
 		
 
 	CargarData(contenedor1.children()[0], data, true);
@@ -331,7 +348,7 @@ function CargarData(contenedor, data, porcentaje)
 		$(itemCategoria).attr('id', 'panelCategoria'+cat.codigo);
 		$(itemCategoria).attr('data-codigo', cat.codigo);
 		$(itemCategoria).attr('data-presupuesto', cat.presupuesto);
-		$(itemCategoria).css('width', anchoCategoria+'px');
+		$(itemCategoria).css('width', Math.floor(anchoCategoria)+'px');
 		$(itemsContainer).append(itemCategoria);
 		
 		var dataContainer = document.createElement('div');
@@ -410,6 +427,40 @@ function CrearElemento(tag, className)
 	var presupuestoCategoria = document.createElement(tag);
 	$(presupuestoCategoria).addClass(className);
 	return $(presupuestoCategoria);
+}
+
+function SetURL(id)
+{
+	var title = 'Armá tu ciudad - ciudad ' + id;
+	var url = window.location.origin + location.pathname + '#' + id;
+    if (typeof (history.pushState) != "undefined") 
+	{
+		document.title = title;
+        var obj = { Title: title, Url: url };
+        history.pushState(obj, obj.Title, obj.Url);
+    }
+	//TODO: crear evento de analytics
+}
+
+function ShareButtonTwitter(url, message)
+{
+	window.open('https://twitter.com/intent/tweet?'+
+	'related=PartidodelaRed&'+
+	'text='+ encodeURIComponent(message + url + ' #ArmaTuCiudad en ' + location.origin+location.pathname),
+	'Compartí en Twitter', 'width=900,height=300,menubar=no,status=no,titlebar=no,top=200,left='+(screen.width-900)/2);
+}
+
+function ShareButtonFacebook(url, title, message, image)
+{
+	window.open('http://www.facebook.com/dialog/feed?app_id=1008540162492210' +
+	'&link='+encodeURIComponent(url) +
+	'&picture=' + encodeURIComponent(image) +
+	'&name=' + encodeURIComponent(title) +
+	'&caption=' + 'via armatuciudad.com.ar - Partido de la Red' +
+	'&description=' + encodeURIComponent(message) +
+	'&redirect_uri=' + location.origin+location.pathname+'close.html' +
+	'&display=popup'
+	, 'Compartí en Facebook', 'width=900,height=300,menubar=no,status=no,titlebar=no,top=200,left='+(screen.width-900)/2);
 }
 
 function GuardarData(data, cb)
