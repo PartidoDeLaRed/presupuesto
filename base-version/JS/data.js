@@ -132,7 +132,7 @@ window.categoriasDefault = [
 		codigo:3,
 		nombre: 'Trabajo e Industria',
 		presupuesto: 8509845751.1,
-		imagen: 'trabajoIcon.svg',
+		imagen: 'trabajoicon.svg',
 		color: 'rgba(255,255,255,.0)',
 	},
 	{
