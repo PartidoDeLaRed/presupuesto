@@ -7,7 +7,7 @@
   {
     "name": "Promoción y Acción Social",
     "composes": ["Promoción y Acción Social"],
-    "image": "educacion.svg"
+    "image": "socialIcon.svg"
   },
   {
     "name": "Transporte",
@@ -32,7 +32,7 @@
   {
     "name": "Cultura y Turismo",
     "composes": ["Cultura", "Turismo"],
-    "image": "presupuesto-06.svg"
+    "image": "turismoIcon.svg"
   },
   {
     "name": "Educación",
