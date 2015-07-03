@@ -1,5 +1,6 @@
 window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
+	
 	$.get('/api/budget/2015', function (data) {
 		var i = -1;
 		window.categoriasGobierno2015 = data.map(function(budget) {
@@ -12,7 +13,34 @@ $(document).ready(function(e) {
 				imagen: budget.category.image
 			}
 		})
-		CargarInicio();
+		//Decidir que hacer en base al hash de la url y la cookie
+		var hash = document.location.href.split('#')[1];
+		var cookie = document.cookie['mybudget'];
+		if(hash)
+		{
+			if(cookie)
+			{
+				if(hash == cookie)
+				{
+					//TODO: Cargar el budget del identificador del hash y permitir edicición
+				}
+				else
+				{
+					//TODO: Cargar el budget del identificador del hash y NO permitir edicición,
+					//con la opción para que edite el que ya creó (cargando el budget del identificador de la cookie)
+				}
+			}
+			else
+			{
+				//TODO: Cargar el budget del identificador del hash y NO permitir edicición, con la opción de que cree uno nuevo
+			}
+		}
+		else if(cookie)
+		{
+			//TODO: Cargar el budget del identificador de la cookie y permitir edicición
+		}
+		else
+			CargarInicio();
 	});
 });
 
@@ -55,8 +83,12 @@ function CargaJuego(data)
 			{
 				var texto = respuesta.responseText;
 				var cookieName = 'mybudget';
+				var expireDate = new Date();
+				expireDate.setDate(expireDate.getDate() + 365);
 				//Crear cookie con un identificador del resultado
-				document.cookie = cookieName + '=' + texto;
+				document.cookie = cookieName + '=' + texto + ';max-age=' + 60*60*24*365 + ';expires=' + expireDate.toGMTString();
+				//Agregar el identificador en la url
+				SetURL(texto);
 			}
 		});
     });
