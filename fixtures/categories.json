@@ -32,7 +32,7 @@
   {
     "name": "Cultura y Turismo",
     "composes": ["Cultura", "Turismo"],
-    "image": "turismoIcon.svg"
+    "image": "turismoicon.svg"
   },
   {
     "name": "Educación",
