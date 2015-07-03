@@ -118,7 +118,7 @@ window.categoriasDefault = [
 		codigo:7,
 		nombre: 'Cultura y Turismo',
 		presupuesto: 8509845751.1,
-		imagen: 'turismoIcon.svg',
+		imagen: 'turismoicon.svg',
 		color: 'rgba(255,255,255,.0)',
 	},
 	{
@@ -132,7 +132,7 @@ window.categoriasDefault = [
 		codigo:3,
 		nombre: 'Trabajo e Industria',
 		presupuesto: 8509845751.1,
-		imagen: 'trabajoicon.svg',
+		imagen: 'trabajoIcon.svg',
 		color: 'rgba(255,255,255,.0)',
 	},
 	{
