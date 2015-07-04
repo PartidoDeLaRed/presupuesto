@@ -13,34 +13,48 @@ $(document).ready(function(e) {
 				imagen: budget.category.image
 			}
 		})
-		//Decidir que hacer en base al hash de la url y la cookie
-		var hash = document.location.href.split('#')[1];
-		var cookie = document.cookie['mybudget'];
-		if(hash)
-		{
-			if(cookie)
+
+		$.get('/api/budget/average', function (data) {
+			var i = -1;
+			window.categoriasAverage = data.map(function(budget) {
+				i++;
+				return {
+					codigo: i,
+					nombre: budget.category.name,
+					color: DEFAULT_COLOR,
+					presupuesto: budget.amount,
+					imagen: budget.category.image
+				}
+			})
+			//Decidir que hacer en base al hash de la url y la cookie
+			var hash = document.location.href.split('#')[1];
+			var cookie = document.cookie['mybudget'];
+			if(hash)
 			{
-				if(hash == cookie)
+				if(cookie)
 				{
-					//TODO: Cargar el budget del identificador del hash y permitir edicición
+					if(hash == cookie)
+					{
+						//TODO: Cargar el budget del identificador del hash y permitir edicición
+					}
+					else
+					{
+						//TODO: Cargar el budget del identificador del hash y NO permitir edicición,
+						//con la opción para que edite el que ya creó (cargando el budget del identificador de la cookie)
+					}
 				}
 				else
 				{
-					//TODO: Cargar el budget del identificador del hash y NO permitir edicición,
-					//con la opción para que edite el que ya creó (cargando el budget del identificador de la cookie)
+					//TODO: Cargar el budget del identificador del hash y NO permitir edicición, con la opción de que cree uno nuevo
 				}
 			}
-			else
+			else if(cookie)
 			{
-				//TODO: Cargar el budget del identificador del hash y NO permitir edicición, con la opción de que cree uno nuevo
+				//TODO: Cargar el budget del identificador de la cookie y permitir edicición
 			}
-		}
-		else if(cookie)
-		{
-			//TODO: Cargar el budget del identificador de la cookie y permitir edicición
-		}
-		else
-			CargarInicio();
+			else
+				CargarInicio();
+		});
 	});
 });
 
@@ -261,9 +275,9 @@ function CargarResultados(data)
 			$(wrapper2).append(botonTitulo2Hoy);
 			
 			var botonTitulo2Promedio = CrearElemento('div','headerName button');
-			$(botonTitulo2Promedio).html('Lo que piensan los ciudadanos');
+			$(botonTitulo2Promedio).html('Presupuesto ciudadano');
 			$(botonTitulo2Promedio).click(function(e) {
-                CargarData(contenedor2.children()[0], categoriasDefault, true);
+                CargarData(contenedor2.children()[0], window.categoriasAverage, true);
 				$('.selected').removeClass('selected');
 				$(this).addClass('selected');
             });
