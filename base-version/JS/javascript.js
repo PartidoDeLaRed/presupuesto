@@ -14,7 +14,7 @@ $(document).ready(function(e) {
 			}
 		})
 
-		$.get('/api/budget/average', function (data) {
+		$.get('/api/mybudget/average', function (data) {
 			var i = -1;
 			window.categoriasAverage = data.map(function(budget) {
 				i++;
