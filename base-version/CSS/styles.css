@@ -260,6 +260,44 @@ position: absolute;
 bottom: 0;
 }
 
+.infoCategoriaContainer {
+    background-color: rgba(255,255,255,.9);
+    padding: 5px;
+    font-size: 13px;
+    text-align: center;
+    max-width: 300px;
+    position: absolute;
+    left: 50%;
+    right: 0;
+    width: 200px;
+    margin-left: -100px;
+    bottom: 100px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.5);
+    text-overflow: ellipsis;
+    opacity: 1;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 400ms;
+}
+
+.infoCategoriaContainer::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    bottom: -10px;
+    width: 0;    height: 0;    
+    border-left: 10px solid transparent;   
+    border-right: 10px solid transparent;      
+    border-top: 10px solid rgba(255,255,255,.9);
+}
+
+.textDataContainer:hover .infoCategoriaContainer {
+	opacity: 1;
+    transition: opacity 400ms;
+}
+
 .headerName {
 position: absolute;
 top: 0;
@@ -468,6 +506,7 @@ background-position: center bottom;
 left: 0;
 width: 100%;
 z-index: -1;
+opacity: .5;
 }
 
 .ui-resizable-w {

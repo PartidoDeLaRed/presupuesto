@@ -81,8 +81,10 @@ function CargarInicio()
 	$('#inicio').append(iniciarJuego);
 }
 
-function CargaJuego(data)
+function CargaJuego(_data)
 {
+	var data = $.extend(true, [], _data);
+	
 	CargarData('#juego', data, false);
 
 	var terminarJuego = CrearElemento('div', 'finishButton');
@@ -117,16 +119,16 @@ function CargaJuego(data)
 		handles: "e",
 		autoHide: true,
 		resize: function( event, ui ) {
-			var presupuesto = ui.size.width / window.anchoTotal * window.presupuestoTotal;
-			$(ui.element).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+			$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 
 			dif = ui.originalSize.width - ui.element.outerWidth(true);
 			siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
-			var sumaCategoria = dif / siguientes.length;
+			var sumaCategoria = (dif+2) / siguientes.length;
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+				$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 				$(element).css('width', anchoCategoria + 'px');
             });
 			ui.element.css('width', ui.size.width + 'px');
@@ -144,24 +146,24 @@ function CargaJuego(data)
 		resize: function( event, ui ) {
 			var direction = 'left';
 			var dif = ui.position.left - ui.originalPosition.left;
-			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 0)) });
 			if(dif == 0)
 			{
 				direction = 'right';
 				dif = ui.originalSize.width - ui.size.width;
-				siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+				siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 0)) });
 			}
-			var sumaCategoria = dif / siguientes.length;
+			var sumaCategoria = (dif+2) / siguientes.length;
 
 			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
-			$(ui.element).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+			$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
 				
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+				$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
             });
 			
 			if(direction == 'right')
@@ -188,17 +190,17 @@ function CargaJuego(data)
 		resize: function( event, ui ) {
 			var dif = ui.position.left - ui.originalPosition.left;
 			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
-			var sumaCategoria = dif / siguientes.length;
+			var sumaCategoria = (dif+2) / siguientes.length;
 
 			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
-			$(ui.element).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+			$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
 
 			siguientes.each(function(index, element) {
 				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
 				$(element).css('width', anchoCategoria + 'px');
 				
 				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+				$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
             });
 			ui.element.css('margin-left', -dif + 'px');
 			ui.element.css('margin-right', dif + 'px');
@@ -385,7 +387,7 @@ function CargarData(contenedor, data, porcentaje)
 	//Carga de cada categoria en el contenedor con un ancho relativo a su presupuesto
 	var porcentajePromedio = 100 / data.length;
 	var leftAcumulador = 0;
-	data.forEach(function(cat)
+	data.sort(function(a, b){ return a.codigo - b.codigo }).forEach(function(cat)
 	{
 		var anchoCategoria = cat.presupuesto / window.presupuestoTotal * window.anchoTotal;
 
@@ -427,6 +429,14 @@ function CargarData(contenedor, data, porcentaje)
 		var imagenesCategoriaContainer = document.createElement('div');
 		$(imagenesCategoriaContainer).addClass('imagenesCategoriaContainer');
 		$(dataContainer).append(imagenesCategoriaContainer);
+
+		if(cat.info)
+		{
+			var infoCategoriaContainer = document.createElement('div');
+			$(infoCategoriaContainer).addClass('infoCategoriaContainer');
+			$(infoCategoriaContainer).html(cat.info);
+			$(textContainer).append(infoCategoriaContainer);
+		}
 		
 		var imagenCategoria = document.createElement('div');
 		$(imagenCategoria).addClass('imagenCategoria');
