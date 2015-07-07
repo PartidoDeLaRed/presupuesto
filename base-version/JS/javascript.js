@@ -11,7 +11,7 @@ $(document).ready(function(e) {
 				window.categoriasAverage = ApiToBudget(data);
 				//Decidir que hacer en base al hash de la url y la cookie
 				var hash = document.location.href.split('#')[1];
-				var cookie = document.cookie.split('=')[1];
+				var cookie = getCookie('mybudget');
 				if(hash)
 					$.get('/api/mybudget/'+hash, function (dataHash) {
 						var data = ApiToBudget(dataHash);
@@ -71,7 +71,7 @@ function CargaJuego(_data, edicion)
 	var reiniciarJuego = CrearElemento('div', 'addButton');
 	$(reiniciarJuego).html('Crear Nuevo');
 	$(reiniciarJuego).click(function(e) {
-		var data = $.extend(true, [], _data);
+		var data = $.extend(true, [], window.categoriasDefault);
 		CargaJuego(data, true);
 		$(terminarJuego).fadeIn('fast');
 	});
@@ -558,4 +558,15 @@ function BudgetToApi(_data)
 		});
 	});
 	return data;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
 }
