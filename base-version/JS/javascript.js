@@ -1,59 +1,38 @@
 window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
 	
-	$.get('/api/budget/2015', function (data) {
-		var i = -1;
-		window.categoriasGobierno2015 = data.map(function(budget) {
-			i++;
-			return {
-				codigo: i,
-				nombre: budget.category.name,
-				color: DEFAULT_COLOR,
-				presupuesto: budget.amount,
-				imagen: budget.category.image
-			}
-		})
-
-		$.get('/api/mybudget/average', function (data) {
-			var i = -1;
-			window.categoriasAverage = data.map(function(budget) {
-				i++;
-				return {
-					codigo: i,
-					nombre: budget.category.name,
-					color: DEFAULT_COLOR,
-					presupuesto: budget.amount,
-					imagen: budget.category.image
-				}
-			})
-			//Decidir que hacer en base al hash de la url y la cookie
-			var hash = document.location.href.split('#')[1];
-			var cookie = document.cookie['mybudget'];
-			if(hash)
-			{
-				if(cookie)
-				{
-					if(hash == cookie)
-					{
-						//TODO: Cargar el budget del identificador del hash y permitir edicición
-					}
-					else
-					{
-						//TODO: Cargar el budget del identificador del hash y NO permitir edicición,
-						//con la opción para que edite el que ya creó (cargando el budget del identificador de la cookie)
-					}
-				}
+	$.get('/api/budget/2015', function (data2015) {
+		window.categoriasGobierno2015 = ApiToBudget(data2015);
+		window.presupuestoTotal = 0;
+		window.categoriasGobierno2015.forEach(function(cat){window.presupuestoTotal += cat.presupuesto;});
+		$.get('/api/categories', function (dataCategories) {
+			CargarDefault(dataCategories, window.presupuestoTotal);
+			$.get('/api/mybudget/average', function (data) {
+				window.categoriasAverage = ApiToBudget(data);
+				//Decidir que hacer en base al hash de la url y la cookie
+				var hash = document.location.href.split('#')[1];
+				var cookie = document.cookie.split('=')[1];
+				if(hash)
+					$.get('/api/mybudget/'+hash, function (dataHash) {
+						var data = ApiToBudget(dataHash);
+						if(cookie)
+							if(hash == cookie)
+								//Cargar el budget del identificador del hash y SI permitir edicición
+								CargaJuego(data, true);
+							else
+								//Cargar el budget del identificador del hash y NO permitir edicición
+								CargaJuego(data, false);
+						else
+							CargaJuego(data, false);
+					});
+				else if(cookie)
+					$.get('/api/mybudget/'+cookie, function (dataHash) {
+						var data = ApiToBudget(dataHash);
+						CargaJuego(data, true);
+					});
 				else
-				{
-					//TODO: Cargar el budget del identificador del hash y NO permitir edicición, con la opción de que cree uno nuevo
-				}
-			}
-			else if(cookie)
-			{
-				//TODO: Cargar el budget del identificador de la cookie y permitir edicición
-			}
-			else
-				CargarInicio();
+					CargarInicio();
+			});
 		});
 	});
 });
@@ -76,146 +55,165 @@ function CargarInicio()
 	var iniciarJuego = CrearElemento('div', 'buttonIniciarJuego');
 	$(iniciarJuego).html('Comenzar');
 	$(iniciarJuego).click(function(e) {
-		CargaJuego(categoriasDefault);
+		CargaJuego(window.categoriasDefault, true);
     });
 	$('#inicio').append(iniciarJuego);
 }
 
-function CargaJuego(_data)
+function CargaJuego(_data, edicion)
 {
 	var data = $.extend(true, [], _data);
-	
 	CargarData('#juego', data, false);
+
+	var buttonsWrapper = CrearElemento('div', 'buttonsWrapper');
+	$('.header').append(buttonsWrapper);
+
+	var reiniciarJuego = CrearElemento('div', 'addButton');
+	$(reiniciarJuego).html('Crear Nuevo');
+	$(reiniciarJuego).click(function(e) {
+		var data = $.extend(true, [], _data);
+		CargaJuego(data, true);
+		$(terminarJuego).fadeIn('fast');
+	});
+	$(buttonsWrapper).append(reiniciarJuego);
 
 	var terminarJuego = CrearElemento('div', 'finishButton');
 	$(terminarJuego).html('Terminar');
 	$(terminarJuego).click(function(e) {
 		CargarResultados(data);
-		
 		//Guardar resultado en base de datos
-		GuardarData(data, function (respuesta)
+		var saveData = BudgetToApi(data);
+		GuardarData(saveData, function (respuesta)
 		{
-			if (respuesta.status === 200)
-			{
-				var texto = respuesta.responseText;
-				var cookieName = 'mybudget';
-				var expireDate = new Date();
-				expireDate.setDate(expireDate.getDate() + 365);
-				//Crear cookie con un identificador del resultado
-				document.cookie = cookieName + '=' + texto + ';max-age=' + 60*60*24*365 + ';expires=' + expireDate.toGMTString();
-				//Agregar el identificador en la url
-				SetURL(texto);
-			}
+			var texto = respuesta.id;
+			var cookieName = 'mybudget';
+			var expireDate = new Date();
+			expireDate.setDate(expireDate.getDate() + 365);
+			//Crear cookie con un identificador del resultado
+			document.cookie = cookieName + '=' + texto + ';max-age=' + 60*60*24*365 + ';expires=' + expireDate.toGMTString();
+			//Agregar el identificador en la url
+			SetURL(texto);
 		});
     });
-	$('.header').append(terminarJuego);
-	
-	var dineroTotal = CrearElemento('div','total-dinero');
-	$(dineroTotal).html('Presupuesto Total: '+FormateoDinero(window.presupuestoTotal));
-	$('#juego').append(dineroTotal);
+	$(buttonsWrapper).append(terminarJuego);
 
-	//Interaccion
-	$('.item-container:first').resizable({
-		handles: "e",
-		autoHide: true,
-		resize: function( event, ui ) {
-			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
-			$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-
-			dif = ui.originalSize.width - ui.element.outerWidth(true);
-			siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
-			var sumaCategoria = (dif+2) / siguientes.length;
-			siguientes.each(function(index, element) {
-				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
-				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-				$(element).css('width', anchoCategoria + 'px');
-            });
-			ui.element.css('width', ui.size.width + 'px');
-		},
-		stop: function(event, ui)
-		{
-			$(data).each(function(index, element) {
-				RecalcularPresupuesto(element);
-            });
-		}
-	});
-	$('.item-container:not(:first):not(:last)').resizable({
-		handles: "w,e",
-		autoHide: true,
-		resize: function( event, ui ) {
-			var direction = 'left';
-			var dif = ui.position.left - ui.originalPosition.left;
-			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 0)) });
-			if(dif == 0)
-			{
-				direction = 'right';
-				dif = ui.originalSize.width - ui.size.width;
-				siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 0)) });
-			}
-			var sumaCategoria = (dif+2) / siguientes.length;
-
-			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
-			$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-
-			siguientes.each(function(index, element) {
-				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
-				$(element).css('width', anchoCategoria + 'px');
-				
-				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-            });
+	if(edicion)
+	{
+		$(reiniciarJuego).html('Reiniciar');
+		$(reiniciarJuego).addClass('resetButton');
+		$(terminarJuego).fadeIn('fast');
 			
-			if(direction == 'right')
+		var dineroTotal = CrearElemento('div','total-dinero');
+		$(dineroTotal).html('Presupuesto Total: '+FormateoDinero(window.presupuestoTotal));
+		$('#juego').append(dineroTotal);
+	
+		//Interaccion
+		$('.item-container:first').resizable({
+			handles: "e",
+			autoHide: true,
+			resize: function( event, ui ) {
+				var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+				$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+	
+				dif = ui.originalSize.width - ui.element.outerWidth(true);
+				siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+				var sumaCategoria = (dif+2) / siguientes.length;
+				siguientes.each(function(index, element) {
+					var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
+					var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
+					$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+					$(element).css('width', anchoCategoria + 'px');
+				});
 				ui.element.css('width', ui.size.width + 'px');
-			else
+			},
+			stop: function(event, ui)
 			{
+				$(data).each(function(index, element) {
+					RecalcularPresupuesto(element);
+				});
+			}
+		});
+		$('.item-container:not(:first):not(:last)').resizable({
+			handles: "w,e",
+			autoHide: true,
+			resize: function( event, ui ) {
+				var direction = 'left';
+				var dif = ui.position.left - ui.originalPosition.left;
+				var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 0)) });
+				if(dif == 0)
+				{
+					direction = 'right';
+					dif = ui.originalSize.width - ui.size.width;
+					siguientes = $('.ui-resizable-resizing').nextAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 0)) });
+				}
+				var sumaCategoria = (dif+2) / siguientes.length;
+	
+				var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+				$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+	
+				siguientes.each(function(index, element) {
+					var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
+					$(element).css('width', anchoCategoria + 'px');
+					
+					var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
+					$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+				});
+				
+				if(direction == 'right')
+					ui.element.css('width', ui.size.width + 'px');
+				else
+				{
+					ui.element.css('margin-left', -dif + 'px');
+					ui.element.css('margin-right', dif + 'px');
+				}
+			},
+			stop: function(event, ui)
+			{
+				ui.element.css('left', ui.position.left + SinPx(ui.element.css('margin-left')));
+				ui.element.css('margin-left', 0 + 'px');
+				ui.element.css('margin-right', 0 + 'px');
+				$(data).each(function(index, element) {
+					RecalcularPresupuesto(element);
+				});
+			}
+		});
+		$('.item-container:last').resizable({
+			handles: "w",
+			autoHide: true,
+			resize: function( event, ui ) {
+				var dif = ui.position.left - ui.originalPosition.left;
+				var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
+				var sumaCategoria = (dif+2) / siguientes.length;
+	
+				var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
+				$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+	
+				siguientes.each(function(index, element) {
+					var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
+					$(element).css('width', anchoCategoria + 'px');
+					
+					var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
+					$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
+				});
 				ui.element.css('margin-left', -dif + 'px');
 				ui.element.css('margin-right', dif + 'px');
+			},
+			stop: function(event, ui)
+			{
+				ui.element.css('left', ui.position.left + SinPx(ui.element.css('margin-left')));
+				ui.element.css('margin-left', 0 + 'px');
+				ui.element.css('margin-right', 0 + 'px');
+				$(data).each(function(index, element) {
+					RecalcularPresupuesto(element);
+				});
 			}
-		},
-		stop: function(event, ui)
-		{
-			ui.element.css('left', ui.position.left + SinPx(ui.element.css('margin-left')));
-			ui.element.css('margin-left', 0 + 'px');
-			ui.element.css('margin-right', 0 + 'px');
-			$(data).each(function(index, element) {
-				RecalcularPresupuesto(element);
-            });
-		}
-	});
-	$('.item-container:last').resizable({
-		handles: "w",
-		autoHide: true,
-		resize: function( event, ui ) {
-			var dif = ui.position.left - ui.originalPosition.left;
-			var siguientes = $('.ui-resizable-resizing').prevAll().filter(function(index, e){ return ( dif > 0 || (dif < 0 && $(e).outerWidth(true) > 12)) });
-			var sumaCategoria = (dif+2) / siguientes.length;
-
-			var presupuesto = (ui.size.width + 2) / window.anchoTotal * window.presupuestoTotal;
-			$(ui.element).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-
-			siguientes.each(function(index, element) {
-				var anchoCategoria = parseFloat($(element).attr('data-presupuesto')) / window.presupuestoTotal * window.anchoTotal + sumaCategoria;
-				$(element).css('width', anchoCategoria + 'px');
-				
-				var presupuesto = anchoCategoria / window.anchoTotal * window.presupuestoTotal;
-				$(this).children('.textDataContainer').children('.presupuestoCategoria').html(FormateoDinero(presupuesto));
-            });
-			ui.element.css('margin-left', -dif + 'px');
-			ui.element.css('margin-right', dif + 'px');
-		},
-		stop: function(event, ui)
-		{
-			ui.element.css('left', ui.position.left + SinPx(ui.element.css('margin-left')));
-			ui.element.css('margin-left', 0 + 'px');
-			ui.element.css('margin-right', 0 + 'px');
-			$(data).each(function(index, element) {
-				RecalcularPresupuesto(element);
-            });
-		}
-	});
-	
+		});
+		
+	}
+	else
+	{
+		CargarData('#juego', data, false);
+	}
 	//Desplazamiento hacia el contenedor del juego
 	$('.container-wrapper').animate({top: '-100%'}, 1000, function()
 		{
@@ -363,7 +361,7 @@ function CargarMasInfo()
 	);
 }
 
-function CargarData(contenedor, data, porcentaje)
+function CargarData(contenedor, data, porcentaje, conDescripcion)
 {
 	//Borro el contenido del contenedor
 	$(contenedor).html('');
@@ -430,7 +428,7 @@ function CargarData(contenedor, data, porcentaje)
 		$(imagenesCategoriaContainer).addClass('imagenesCategoriaContainer');
 		$(dataContainer).append(imagenesCategoriaContainer);
 
-		if(cat.info)
+		if(cat.info && conDescripcion)
 		{
 			var infoCategoriaContainer = document.createElement('div');
 			$(infoCategoriaContainer).addClass('infoCategoriaContainer');
@@ -527,4 +525,37 @@ function GuardarData(data, cb)
 		data: { data: data },
 		dataType: 'json'
 	}).always(cb);
+}
+
+function ApiToBudget(_data)
+{
+	var data = null;
+	if(_data.rows)
+		data = _data.rows;
+	else
+		data = _data;
+	return data.map(function(budget) {
+		return {
+			codigo: budget.category.id,
+			nombre: budget.category.name,
+			color: DEFAULT_COLOR,
+			presupuesto: budget.amount,
+			imagen: budget.category.image
+		}
+	})
+}
+
+function BudgetToApi(_data)
+{
+	var data = new Object();
+	data.rows = [];
+	_data.forEach(function(Item)
+	{
+		data.rows.push(
+		{
+			category: Item.codigo,
+			amount: Item.presupuesto
+		});
+	});
+	return data;
 }

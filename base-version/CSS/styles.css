@@ -364,10 +364,14 @@ background-color: #eee;
 box-shadow: 0 2px 3px rgba(0,0,0,.2);
 }
 
+.buttonsWrapper {
+    position: absolute;
+    right: 0;
+}
+
 .finishButton {
-position: absolute;
-right: 0;
-top: 0;
+position: relative;
+display: inline-block;
 margin: 2.5px;
 height: 45px;
 line-height: 44px;
@@ -385,6 +389,32 @@ background-repeat: no-repeat;
 border-bottom: 4px solid rgba(0,0,0,.2);
 border-right: 0px solid rgba(0,0,0,.2);
 border-radius: 3px;
+}
+
+.addButton {
+  position: relative;
+  display: inline-block;
+  margin: 2.5px;
+  height: 45px;
+  line-height: 44px;
+  padding: 0 15px 0 50px;
+  background-color: #169CBF;
+  color: #eee;
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-image: url(../IMG/addIcon.png);
+  background-position: left center;
+  background-size: 45px 45px;
+  background-repeat: no-repeat;
+  border-bottom: 4px solid rgba(0,0,0,.2);
+  border-right: 0px solid rgba(0,0,0,.2);
+  border-radius: 3px;
+}
+
+.resetButton{
+  background-image: url(../IMG/resetIcon.png);
 }
 
 #resultados {
