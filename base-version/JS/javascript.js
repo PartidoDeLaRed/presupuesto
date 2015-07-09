@@ -522,7 +522,7 @@ function GuardarData(data, cb)
 	$.ajax({
 		type: 'POST',
 		url: '/api/mybudget/',
-		data: { data: data },
+		data: data,
 		dataType: 'json'
 	}).always(cb);
 }
