@@ -247,7 +247,7 @@ function CargarResultados(data)
 			var shareFacebook = CrearElemento('div','shareButtonFacebook');
 			$(shareFacebook).html('Compartila en Facebook');
 			$(shareFacebook).click(function(e) {
-                ShareButtonFacebook(window.location.href, 'Así armé el presupuesto para la ciudad', 'Armá el tuyo en armatuciudad.com.ar', location.origin+location.pathname+'IMG/shareImage.png');
+                ShareButtonFacebook(window.location.href, 'Así armé el presupuesto para la ciudad', 'Decidí a que área le darías más y a cual menos dinero para conformar el presupuesto de la ciudad. Luego compará con el presupuesto actual y con los que crearon los demás ciudadanos', location.origin+location.pathname+'IMG/shareImage.png');
             });
 			$(wrapper1).append(shareFacebook);
 	
