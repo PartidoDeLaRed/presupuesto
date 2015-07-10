@@ -127,7 +127,11 @@ function CargaJuego(_data, edicion)
 		var saveData = BudgetToApi(data);
 		GuardarData(saveData, function (respuesta)
 		{
-			var texto = respuesta.id;
+			var texto = '';
+			if(respuesta.id)
+				texto = respuesta.id;
+			else if(respuesta._id)
+				texto = respuesta._id;
 			var cookieName = 'mybudget';
 			var expireDate = new Date();
 			expireDate.setDate(expireDate.getDate() + 365);
