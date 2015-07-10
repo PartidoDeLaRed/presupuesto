@@ -1,5 +1,7 @@
 window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
+	LoadHelp();
+	
 	//Get budget from 2015
 	$.get('/api/budget/2015', function (data2015) {
 		window.categoriasGobierno2015 = ApiToBudget(data2015);
@@ -53,6 +55,31 @@ $(document).ready(function(e) {
 	});
 });
 
+function LoadHelp()
+{
+	var aboutButton = CrearElemento('div', 'buttonHeader aboutButton');
+	$(aboutButton).html('Acerca de');
+	$(aboutButton).click(function(e) {
+		$('.aboutPanel').slideToggle();
+	});
+	$('.buttonsWrapper-left').append(aboutButton);
+
+		var aboutPanel = CrearElemento('div','aboutPanel');
+		$(aboutPanel).html();
+		$('.container').append(aboutPanel);
+
+	var helpButton = CrearElemento('div', 'buttonHeader helpButton');
+	$(helpButton).html('Ayuda');
+	$(helpButton).click(function(e) {
+		$('.helpPanel').slideToggle();
+	});
+	$('.buttonsWrapper-left').append(helpButton);
+
+		var helpPanel = CrearElemento('div','helpPanel');
+		$(helpPanel).html();
+		$('.container').append(helpPanel);
+}
+
 function CargarInicio()
 {
 	var sky = CrearElemento('div', 'street-section-sky');
@@ -83,7 +110,7 @@ function CargaJuego(_data, edicion)
 	
 	$('.buttonsWrapper-right').html('');
 
-	var reiniciarJuego = CrearElemento('div', 'addButton');
+	var reiniciarJuego = CrearElemento('div', 'buttonHeader addButton');
 	$(reiniciarJuego).html('Crear Nuevo');
 	$(reiniciarJuego).click(function(e) {
 		var data = $.extend(true, [], window.categoriasDefault);
@@ -92,7 +119,7 @@ function CargaJuego(_data, edicion)
 	});
 	$('.buttonsWrapper-right').append(reiniciarJuego);
 
-	var terminarJuego = CrearElemento('div', 'finishButton');
+	var terminarJuego = CrearElemento('div', 'buttonHeader finishButton');
 	$(terminarJuego).html('Terminar');
 	$(terminarJuego).click(function(e) {
 		CargarResultados(data);
@@ -230,13 +257,13 @@ function CargaJuego(_data, edicion)
 		CargarData('#juego', data, false);
 	}
 	//Desplazamiento hacia el contenedor del juego
+	$('.header').addClass('solid');
+	$('.headerName').fadeIn();
+	$('.item-container').css('border-color', 'rgba(0,0,0,.1)');
 	$('.container-wrapper').animate({top: '-100%'}, 1000, function()
 		{
 			setTimeout(function(){
-				$('.item-container').css('border-color', 'rgba(0,0,0,.1)');
-				$('.header').animate({top:0}, 500, function(){
-					$(dineroTotal).slideDown('fast');
-				});
+				$(dineroTotal).slideDown('fast');
 			}, 200);
 		}
 	);
