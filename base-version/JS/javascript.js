@@ -570,7 +570,7 @@ function ShareButtonFacebook(url, title, message, image)
 function GuardarData(data, cb)
 {
 	$.ajax({
-		type: 'POST',
+		type: window.editID ? 'PUT' : 'POST',
 		url: '/api/mybudget/',
 		data: data,
 		dataType: 'json'
@@ -599,9 +599,8 @@ function BudgetToApi(_data)
 {
 	var data = new Object();
 	if(window.editID)
-		data._id = window.editID;
-	else
-		data._id = '-1';
+		data.id = window.editID;
+
 	data.rows = [];
 	_data.forEach(function(Item)
 	{
