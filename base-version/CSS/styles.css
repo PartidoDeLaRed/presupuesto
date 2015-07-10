@@ -364,7 +364,12 @@ background-color: #eee;
 box-shadow: 0 2px 3px rgba(0,0,0,.2);
 }
 
-.buttonsWrapper {
+.buttonsWrapper-left {
+    position: absolute;
+    left: 0;
+}
+
+.buttonsWrapper-right {
     position: absolute;
     right: 0;
 }
@@ -397,7 +402,7 @@ border-radius: 3px;
   margin: 2.5px;
   height: 45px;
   line-height: 44px;
-  padding: 0 15px 0 50px;
+  padding: 0 15px 0 40px;
   background-color: #169CBF;
   color: #eee;
   font-size: 20px;

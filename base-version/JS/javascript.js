@@ -1,34 +1,50 @@
 window.DEFAULT_COLOR = 'rgba(255,255,255,.0)';
 $(document).ready(function(e) {
-	
+	//Get budget from 2015
 	$.get('/api/budget/2015', function (data2015) {
 		window.categoriasGobierno2015 = ApiToBudget(data2015);
 		window.presupuestoTotal = 0;
-		window.categoriasGobierno2015.forEach(function(cat){window.presupuestoTotal += cat.presupuesto;});
+		window.categoriasGobierno2015.forEach(function(cat){window.presupuestoTotal += parseFloat(cat.presupuesto);});
+
+		//Get categories
 		$.get('/api/categories', function (dataCategories) {
 			CargarDefault(dataCategories, window.presupuestoTotal);
+
+			//Get average budget
 			$.get('/api/mybudget/average', function (data) {
 				window.categoriasAverage = ApiToBudget(data);
+
 				//Decidir que hacer en base al hash de la url y la cookie
 				var hash = document.location.href.split('#')[1];
 				var cookie = getCookie('mybudget');
-				if(hash)
+				if(hash && hash!=='')
+
+					//Get budget from id
 					$.get('/api/mybudget/'+hash, function (dataHash) {
 						var data = ApiToBudget(dataHash);
 						if(cookie)
 							if(hash == cookie)
+							{
+								window.editID = hash;
 								//Cargar el budget del identificador del hash y SI permitir edicición
 								CargaJuego(data, true);
+							}
 							else
 								//Cargar el budget del identificador del hash y NO permitir edicición
 								CargaJuego(data, false);
 						else
 							CargaJuego(data, false);
+					}).fail(function() {
+					    CargarInicio();
 					});
 				else if(cookie)
+
+					//Get budget from id
 					$.get('/api/mybudget/'+cookie, function (dataHash) {
 						var data = ApiToBudget(dataHash);
 						CargaJuego(data, true);
+					}).fail(function() {
+					    CargarInicio();
 					});
 				else
 					CargarInicio();
@@ -64,9 +80,8 @@ function CargaJuego(_data, edicion)
 {
 	var data = $.extend(true, [], _data);
 	CargarData('#juego', data, false);
-
-	var buttonsWrapper = CrearElemento('div', 'buttonsWrapper');
-	$('.header').append(buttonsWrapper);
+	
+	$('.buttonsWrapper-right').html('');
 
 	var reiniciarJuego = CrearElemento('div', 'addButton');
 	$(reiniciarJuego).html('Crear Nuevo');
@@ -75,7 +90,7 @@ function CargaJuego(_data, edicion)
 		CargaJuego(data, true);
 		$(terminarJuego).fadeIn('fast');
 	});
-	$(buttonsWrapper).append(reiniciarJuego);
+	$('.buttonsWrapper-right').append(reiniciarJuego);
 
 	var terminarJuego = CrearElemento('div', 'finishButton');
 	$(terminarJuego).html('Terminar');
@@ -95,7 +110,7 @@ function CargaJuego(_data, edicion)
 			SetURL(texto);
 		});
     });
-	$(buttonsWrapper).append(terminarJuego);
+	$('.buttonsWrapper-right').append(terminarJuego);
 
 	if(edicion)
 	{
@@ -284,8 +299,8 @@ function CargarResultados(data)
 			$(wrapper2).append(botonTitulo2Promedio);
 		
 
-	CargarData(contenedor1.children()[0], data, true);
-	CargarData(contenedor2.children()[0], categoriasGobierno2015, true);
+	CargarData(contenedor1.children()[0], data, true, false);
+	CargarData(contenedor2.children()[0], categoriasGobierno2015, true, false);
 
 	var base = CrearElemento('div', 'items-base');
 	$('#resultados').append(base);
@@ -378,16 +393,16 @@ function CargarData(contenedor, data, porcentaje, conDescripcion)
 	
 	//Calculo de presupuestoTotal en base a la suma de los presupuestos de todas las categoiras
 	window.presupuestoTotal = 0;
-	data.forEach(function(cat){window.presupuestoTotal += cat.presupuesto;});
+	data.forEach(function(cat){window.presupuestoTotal += parseFloat(cat.presupuesto);});
 	
 	window.anchoTotal = $(itemsContainer).outerWidth(true);
 	
 	//Carga de cada categoria en el contenedor con un ancho relativo a su presupuesto
 	var porcentajePromedio = 100 / data.length;
 	var leftAcumulador = 0;
-	data.sort(function(a, b){ return a.codigo - b.codigo }).forEach(function(cat)
+	data.sort(compare).forEach(function(cat)
 	{
-		var anchoCategoria = cat.presupuesto / window.presupuestoTotal * window.anchoTotal;
+		var anchoCategoria = parseFloat(cat.presupuesto) / window.presupuestoTotal * window.anchoTotal;
 
 		var itemCategoria = document.createElement('div');
 		$(itemCategoria).addClass('item-container');
@@ -483,6 +498,14 @@ function CrearElemento(tag, className)
 	return $(presupuestoCategoria);
 }
 
+function compare(a,b) {
+  if (a.nombre < b.nombre)
+    return -1;
+  if (a.nombre > b.nombre)
+    return 1;
+  return 0;
+}
+
 function SetURL(id)
 {
 	var title = 'Armá tu ciudad - ciudad ' + id;
@@ -536,7 +559,7 @@ function ApiToBudget(_data)
 		data = _data;
 	return data.map(function(budget) {
 		return {
-			codigo: budget.category.id,
+			codigo: budget.category._id,
 			nombre: budget.category.name,
 			color: DEFAULT_COLOR,
 			presupuesto: budget.amount,
@@ -548,6 +571,10 @@ function ApiToBudget(_data)
 function BudgetToApi(_data)
 {
 	var data = new Object();
+	if(window.editID)
+		data._id = window.editID;
+	else
+		data._id = '-1';
 	data.rows = [];
 	_data.forEach(function(Item)
 	{
