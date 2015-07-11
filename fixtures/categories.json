@@ -10,7 +10,7 @@
     "image": "socialIcon.svg"
   },
   {
-    "name": "Transporte",
+    "name": "Transporte y Espacio Público",
     "composes": ["Transporte"],
     "image": "transporteIcon.svg"
   },

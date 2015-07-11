@@ -105,49 +105,48 @@ function CargarInicio()
 
 function CargaJuego(_data, edicion)
 {
+	$('#resultados').html('');
+
 	var data = $.extend(true, [], _data);
-	CargarData('#juego', data, false);
+	CargarData('#juego', data, false, true);
 	
 	$('.buttonsWrapper-right').html('');
 
 	var reiniciarJuego = CrearElemento('div', 'buttonHeader addButton');
 	$(reiniciarJuego).html('Crear Nuevo');
 	$(reiniciarJuego).click(function(e) {
-		var data = $.extend(true, [], window.categoriasDefault);
-		CargaJuego(data, true);
+		CargaJuego(window.categoriasDefault, true);
 		$(terminarJuego).fadeIn('fast');
 	});
 	$('.buttonsWrapper-right').append(reiniciarJuego);
 
-	var terminarJuego = CrearElemento('div', 'buttonHeader finishButton');
-	$(terminarJuego).html('Terminar');
-	$(terminarJuego).click(function(e) {
-		CargarResultados(data);
-		//Guardar resultado en base de datos
-		var saveData = BudgetToApi(data);
-		GuardarData(saveData, function (respuesta)
-		{
-			var texto = '';
-			if(respuesta.id)
-				texto = respuesta.id;
-			else if(respuesta._id)
-				texto = respuesta._id;
-			var cookieName = 'mybudget';
-			var expireDate = new Date();
-			expireDate.setDate(expireDate.getDate() + 365);
-			//Crear cookie con un identificador del resultado
-			document.cookie = cookieName + '=' + texto + ';max-age=' + 60*60*24*365 + ';expires=' + expireDate.toGMTString();
-			//Agregar el identificador en la url
-			SetURL(texto);
-		});
-    });
-	$('.buttonsWrapper-right').append(terminarJuego);
-
 	if(edicion)
 	{
+		var terminarJuego = CrearElemento('div', 'buttonHeader finishButton');
+		$(terminarJuego).html('Terminar');
+		$(terminarJuego).click(function(e) {
+			CargarResultados(data);
+			//Guardar resultado en base de datos
+			var saveData = BudgetToApi(data);
+			GuardarData(saveData, function (respuesta)
+			{
+				if(respuesta.id)
+					window.editID = respuesta.id;
+				else if(respuesta._id)
+					window.editID = respuesta._id;
+				var cookieName = 'mybudget';
+				var expireDate = new Date();
+				expireDate.setDate(expireDate.getDate() + 365);
+				//Crear cookie con un identificador del resultado
+				document.cookie = cookieName + '=' + window.editID + ';max-age=' + 60*60*24*365 + ';expires=' + expireDate.toGMTString();
+				//Agregar el identificador en la url
+				SetURL(window.editID);
+			});
+		});
+		$('.buttonsWrapper-right').append(terminarJuego);
+
 		$(reiniciarJuego).html('Reiniciar');
 		$(reiniciarJuego).addClass('resetButton');
-		$(terminarJuego).fadeIn('fast');
 			
 		var dineroTotal = CrearElemento('div','total-dinero');
 		$(dineroTotal).html('Presupuesto Total: '+FormateoDinero(window.presupuestoTotal));
@@ -258,7 +257,7 @@ function CargaJuego(_data, edicion)
 	}
 	else
 	{
-		CargarData('#juego', data, false);
+		CargarData('#juego', data, false, true);
 	}
 	//Desplazamiento hacia el contenedor del juego
 	$('.header').addClass('solid');
@@ -276,7 +275,7 @@ function CargaJuego(_data, edicion)
 function CargarResultados(data)
 {
 	$('.finishButton').animate({opacity:0}, 500, function(){
-		$('.finishButton').remove();
+		$('.finishButton').hide();
 	});
 	
 	var	contenedor1 = CrearElemento('div', 'inset-container');
@@ -314,7 +313,7 @@ function CargarResultados(data)
 			var botonTitulo2Hoy = CrearElemento('div','headerName button selected');
 			$(botonTitulo2Hoy).html('Buenos Aires hoy');
 			$(botonTitulo2Hoy).click(function(e) {
-                CargarData(contenedor2.children()[0], categoriasGobierno2015, true);
+                CargarData(contenedor2.children()[0], categoriasGobierno2015, true, false);
 				$('.selected').removeClass('selected');
 				$(this).addClass('selected');
             });
@@ -323,7 +322,7 @@ function CargarResultados(data)
 			var botonTitulo2Promedio = CrearElemento('div','headerName button');
 			$(botonTitulo2Promedio).html('Presupuesto ciudadano');
 			$(botonTitulo2Promedio).click(function(e) {
-                CargarData(contenedor2.children()[0], window.categoriasAverage, true);
+                CargarData(contenedor2.children()[0], window.categoriasAverage, true, false);
 				$('.selected').removeClass('selected');
 				$(this).addClass('selected');
             });
@@ -351,7 +350,7 @@ function CargarResultados(data)
 					setTimeout(function(){
 						$(element).animate({opacity:1}, 700);
 					}, i * 100);
-					i++;
+					i+=4;
                 });
 			}, 100);
 		}
@@ -381,7 +380,7 @@ function CargarMasInfo()
 		// vaciamos el contenido de #juego
 		$('#juego').html('');
 		// y volvemos a ejecutar CargaJuego
-		CargaJuego(categoriasDefault);
+		CargaJuego(window.categoriasDefault, true);
 
 		// esperamos que termine de subír y borramos los resultados
 		// y los datos
@@ -389,6 +388,7 @@ function CargarMasInfo()
 		{
 			$('#resultados').html('');
 			$datos.html('');
+			$('.finishButton').show();
 		}, 1000)
 	});
 
@@ -401,7 +401,6 @@ function CargarMasInfo()
 		{
 			setTimeout(function(){
 				$('.item-container').css('border-color', 'rgba(0,0,0,.1)');
-				$('.header').animate({top:'-100%'}, 500);
 			}, 200);
 		}
 	);
@@ -500,12 +499,12 @@ function RecalcularPresupuesto(element)
 
 function SinPx(string)
 {
-	return parseInt(string.split('px')[0]);
+	return parseFloat(string.split('px')[0]);
 }
 
 function SinPorcentaje(string)
 {
-	return parseInt(string.split('%')[0]);
+	return parseFloat(string.split('%')[0]);
 }
 
 function Porcentaje(valor, total)
@@ -594,7 +593,8 @@ function ApiToBudget(_data)
 			nombre: budget.category.name,
 			color: DEFAULT_COLOR,
 			presupuesto: budget.amount,
-			imagen: budget.category.image
+			imagen: budget.category.image,
+			info: InfoCategory(budget.category.name)
 		}
 	})
 }

@@ -100,6 +100,7 @@ background-position: center 35px; background-repeat: no-repeat;
 #resultados > .buttonIniciarJuego {
 color: #eee;
 background-image: url(../IMG/downArrows-white.png);
+line-height: 45px;
 }
 
 .buttonIniciarJuego:hover {
