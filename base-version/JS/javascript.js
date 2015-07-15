@@ -14,7 +14,7 @@ $(document).ready(function(e) {
 
 			//Get average budget
 			$.get('/api/mybudget/average', function (data) {
-				window.categoriasAverage = ApiToBudget(data);
+				window.categoriasAverage = ApiToAverage(data);
 
 				//Decidir que hacer en base al hash de la url y la cookie
 				var hash = document.location.href.split('#')[1];
@@ -597,6 +597,19 @@ function ApiToBudget(_data)
 			info: InfoCategory(budget.category.name)
 		}
 	})
+}
+
+function ApiToAverage(data) {
+	return data.map(function(budget) {
+		return {
+			codigo: budget.category._id,
+			nombre: budget.category.name,
+			color: DEFAULT_COLOR,
+			presupuesto: budget.average,
+			imagen: budget.category.image,
+			info: InfoCategory(budget.category.name)
+		}
+	});
 }
 
 function BudgetToApi(_data)
