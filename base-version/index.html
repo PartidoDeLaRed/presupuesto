@@ -50,13 +50,6 @@ UserVoice=window.UserVoice||[];(function(){
 // https://www.uservoice.com/o/javascript-sdk
 //
 
-// Set colors
-UserVoice.push(['set', {
-  accent_color: '#448dd6',
-  trigger_color: 'white',
-  trigger_background_color: '#448dd6'
-}]);
-
 // Identify the user and pass traits
 // To enable, replace sample data with actual user traits and uncomment the line
 UserVoice.push(['identify', {
@@ -75,17 +68,21 @@ UserVoice.push(['identify', {
   //}
 }]);
 
+// Set global widget options
+UserVoice.push(['set', {
+  accent_color: '#169CBF'
+}]);
+
 // Add default trigger to the bottom-right corner of the window:
 UserVoice.push(['addTrigger', {
-	mode: 'contact',
-	trigger_position: 'top-right' 
+  mode: 'contact',
+  trigger_color: 'white',
+  trigger_background_color: 'rgba(46, 49, 51, 0.6)',
+  trigger_position: 'top-right'
 }]);
 
 // Or, use your own custom trigger:
-//UserVoice.push(['addTrigger', '#id']);
-
-// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
-UserVoice.push(['autoprompt', {}]);
+//UserVoice.push(['addTrigger', '#id', { mode: 'satisfaction' }]);
 </script>
 
 <div class="header">
