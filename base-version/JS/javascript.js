@@ -640,3 +640,20 @@ function getCookie(cname) {
     }
     return "";
 }
+
+(function() {
+	var posFront = 0;
+	var posRear = 0;
+	var front;
+	var rear;
+
+	setInterval(function() {
+		if (!front || !front.length) front = $('.front-clouds');
+		if (front.length) front.css('background-position', posFront++ + " 50%");
+	}, 20);
+
+	setInterval(function() {
+		if (!rear || !rear.length) rear = $('.rear-clouds');
+		if (rear.length) rear.css('background-position', posRear++ + "px");
+	}, 40);
+})();
